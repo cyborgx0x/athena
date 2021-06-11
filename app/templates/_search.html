@@ -1,0 +1,203 @@
+<style>
+  .author-result {
+    background-color: white;
+    color: black;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 5px;
+  }
+
+  .author-result a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+
+  }
+</style>
+<div class="input-icon" style="margin: 10;">
+  <span class="input-icon-addon">
+    <!-- Download SVG icon from http://tabler-icons.io/i/search -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+      stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <circle cx="10" cy="10" r="7"></circle>
+      <line x1="21" y1="21" x2="15" y2="15"></line>
+    </svg>
+  </span>
+  <input id="searchbar" type="text" placeholder="Nhập từ khóa cần tìm kiếm" aria-placeholder="Bất cứ từ khóa nào"
+    class="form-control" name="search_bar" />
+
+</div>
+
+<div id="author-result"></div>
+<div id="searchresult" class="row row-card"></div>
+
+
+<script>
+  let searchbar = document.getElementById('searchbar')
+  fictionIndex(searchbar, getIndex)
+
+  function getIndex(indexFile, context) {
+    var index = lunr.Index.load(JSON.parse(indexFile))
+    console.log(indexFile)
+    
+    context.addEventListener('input', function (event) {
+      if (event.target.value == "") {
+        context.parentNode.nextElementSibling.innerHTML = ""
+      } else {
+        context.parentNode.nextElementSibling.innerHTML = ""
+        index.search(event.target.value).forEach(function (each) {
+          showResult(each.ref, context)
+        })
+
+      }
+    })
+  }
+
+  function fictionIndex(context, callFunction) {
+    let savedData = localStorage.getItem("authorIndex")
+    if (savedData != null) {
+      callFunction(savedData,context)
+      
+    } else {
+      let data = {
+        query: "author",
+      }
+
+      axios.post('/build_indexing/', data).then((res) => {
+          console.log("request is sending")
+          var index = lunr(
+            function () {
+              this.field('name')
+              this.ref('id')
+
+              res.data.forEach(function (doc) {
+                this.add(doc)
+              }, this)
+            }
+          )
+          var indexToSave = JSON.stringify(index)
+          var authorData = JSON.stringify(res.data)
+
+          localStorage.setItem("authorData", authorData)
+          localStorage.setItem("authorIndex", indexToSave)
+          callFunction(indexToSave,context)
+        })
+        .catch((err) => {
+          console.log(err.message)
+        })
+    }
+  }
+
+  function showResult(input, context) {
+    let authorDatastring = localStorage.getItem("authorData")
+    let authorData = JSON.parse(authorDatastring)
+    console.log(input)
+    showHere = context.parentNode.nextElementSibling
+    authorData.forEach(function (each) {
+      if (input == each.id) {
+        let data = {
+          href: "/author/" + each.name,
+          img: each.img,
+          name: "Tác giả: " + each.name
+        }
+        createNode(showHere, data)
+      }
+    })
+  }
+
+  function createNode(parent, data) {
+
+    let newLINK = document.createElement('a')
+    newLINK.href = data.href
+    newLINK.textContent = data.name
+    let newNode = document.createElement('div')
+    newNode.className = "author-result"
+    newNode.appendChild(newLINK)
+    parent.appendChild(newNode)
+  }
+
+  var indexfile = getindexing('{{url_for("build_indexing")}}')
+
+  async function getindexing(url) {
+    return (
+      axios.get(url).then(function (response) {
+        return response.data;
+      })).then(function (data) {
+      console.log(data)
+      var idx = lunr(function () {
+        this.use(lunr.vi)
+        this.ref('id')
+        this.field('desc')
+        this.field('name')
+        this.field('tag')
+
+        data.forEach(function (item) {
+          this.add(item)
+        }, this)
+      })
+
+      function createCover(src, alt, parents) {
+        let cover = document.createElement('img')
+        cover.src = "/img-cover/" + encodeURIComponent(src)
+        cover.alt = alt
+        parents.appendChild(cover)
+      }
+
+      function createCardBody(href, text, parents) {
+        let displaysearch = document.createElement('div')
+        displaysearch.className = "card-body"
+        let header = document.createElement('h5')
+        header.className = "card-title"
+        let link = document.createElement('a')
+        link.href = href
+        link.textContent = text
+        header.appendChild(link)
+        displaysearch.appendChild(header)
+        parents.appendChild(displaysearch)
+      }
+
+      function createParent(main) {
+        let finalcard = document.createElement('div')
+        finalcard.className = "col-3"
+
+        let parents = document.createElement('div')
+        parents.className = "card"
+
+        document.getElementById(main).appendChild(finalcard)
+        finalcard.appendChild(parents)
+        return parents
+      }
+      console.log(idx)
+      searchbar = document.getElementById('searchbar')
+      var keyword;
+      searchbar.addEventListener('input', function (e) {
+        let keyword = e.target.value
+        if (keyword == '') {
+          document.getElementById('searchresult').innerHTML = ''
+        } else {
+          document.getElementById('searchresult').innerHTML = ''
+          var search = idx.search(keyword)
+          search.forEach(function (searchresult) {
+            console.log(searchresult)
+
+            var indexitem;
+            data.forEach(function (index) {
+              if (index.id == searchresult.ref) {
+                indexitem = index;
+              }
+            })
+            let href = "/fiction/" + searchresult.ref;
+            let text = indexitem.name
+            let parents = createParent('searchresult')
+            createCover(indexitem.cover, indexitem.name, parents)
+            createCardBody(href, text, parents)
+
+          })
+        }
+
+      })
+
+    })
+  }
+</script>

@@ -1,0 +1,41 @@
+<div class="dropdown">
+    <button type="button" class='btn'  onclick="navigationChapter(this)" value="preButton">Trước</button>
+        <select class="form-select" onchange="location = this.options[this.selectedIndex].value;" id="chapter_list">
+        {% for c in chapters %}   
+            {% if c.id == chapter.id %}
+            <option value={{url_for("public_media", id = c.id )}} selected>{{c.name}}</option>   
+            {% else %}
+            <option value={{url_for("public_media", id = c.id )}}>{{c.name}}</option>   
+            {% endif %}
+        {% endfor %}
+        </select>
+    <button type="button" class='btn'  onclick="navigationChapter(this)" value="nextButton">Sau</button>
+</div>
+<script>
+    
+    function navigationChapter(context) {
+        if (context.value=="preButton") {
+            let item = context.nextElementSibling.options.selectedIndex - 1
+            if (item < 0) {
+                location = "#"
+                alert("Bạn đang ở chương đầu tiên")
+                context.disabled = true
+            }
+            else {
+                location = context.nextElementSibling.options[item].value
+            }
+        }
+        else {
+            let item = context.previousElementSibling.options.selectedIndex + 1
+            if (item == context.previousElementSibling.options.length) {
+                location = "#"
+                context.disabled = true
+                alert("Bạn đang ở chương cuối cùng")
+            }
+            else {
+                location = context.previousElementSibling.options[item].value
+            }
+        }
+        
+    }
+</script>

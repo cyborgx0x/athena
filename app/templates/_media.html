@@ -1,0 +1,29 @@
+<h1>{{media.title}}</h1>
+{% set user = media.getUser(media.user_id) %}
+posted by: <a href="{{url_for('user', username=user.user_name)}}">{{user.user_name}}</a> <br>
+{% if media.media_type == "youtube" %}
+Video Extention
+<div class="card-text">
+<h5>{{media.title}}</h5>
+{% with %}
+    {% set url = media.content %}
+    {% include '_youtubeplayer.html'%}
+{% endwith %}
+
+</div>
+
+
+{% elif media.media_type == "quote" %}
+<blockquote class="blockquote text-center"> 
+    <p class="mb-0">{{media.content}} </p>
+    <footer class="blockquote-footer"><cite title="Source Title">{{media.getAuthor(media.author_id).name}} as said in {{media.getFiction(media.fiction.id).name}}</cite></footer>
+</blockquote>
+
+{% elif media.media_type == "download_link" %}
+Link tải sách: 
+<a href="{{media.content}}">{{media.title}}</a>
+
+{% else %}
+Type Unknown
+
+{% endif %}

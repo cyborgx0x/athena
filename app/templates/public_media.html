@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block title %}{{chapter.name}} - {{collection.name}}{% endblock %}
+{% block search %}
+{% endblock %}
+
+{% block nav %}
+{{super()}}
+
+{% endblock %}
+{% block style %}
+{{super()}}
+<style>
+@media (min-width: 768px) {
+  .form-select{
+    width: 400px;
+    display:inline-flex;
+  }
+}
+.card-title{
+  display: inline-flex;
+}
+.form-select{
+  width: 150px;
+  display:inline-flex;
+}
+.option-button{
+  align-items: flex-start;
+  position: absolute;
+  right:10px
+}
+.back_button{
+  align-items: flex-start;
+  position: absolute;
+  left:10px
+}
+.card-header {
+  display: grid;
+}
+.markdown {
+  font-size: 1rem;
+}
+
+.easy-reading{
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  z-index: 10000;
+  background-color: white;
+}
+.easy-reading button {
+  background-color: rgb(223, 223, 223, 0);
+  border-width:0; 
+  font-size: 1.2em;
+  margin-top: 10px;
+  border-radius: 30px;
+  height: 30px;
+  color: black;
+}
+.main-content-classic {
+  font-size: 1.2em;
+  padding-left: 30px;
+  padding-top: 20px;
+}
+.tableofcontent {
+  padding:2em;
+  margin:1em 3em;
+  position: fixed;
+  background-color: white;
+  display: none;
+  z-index: 2000;
+}
+</style>
+
+{% endblock %}
+{% block content%}
+
+<script>
+  function showoff(context) {
+    console.log(context)
+    if (context.value == "on") {
+      context.value = "off"
+      document.querySelector(".tableofcontent").style.display = "none"
+    } 
+    else {
+      context.value = "on"
+      document.querySelector(".tableofcontent").style.display = "flex"
+    }
+  }
+  function changeValue(context) {
+    if (context.value == "main-content-classic") {
+      document.getElementById('viewerContent').className +=" main-content-classic"
+      document.getElementById('mainView').style.backgroundColor = "dimgrey"
+      document.body.style.color = "white"
+      context.value="main-content"
+    }
+    else {
+      document.getElementById('viewerContent').className = "main-content"
+      document.getElementById('mainView').style.backgroundColor = "white"
+      document.body.style.color = "black"
+
+      context.value="main-content-classic"
+    }
+  }
+</script>
+
+<div class="row justify-content-center">
+  <div class="easy-reading">
+    <button type="button" value="main-content-classic" onclick="changeValue(this)"> 🔥 Bật đèn</button>
+    <button type="button" value="off" onclick="showoff(this)"> 📑 Mục lục</button>
+
+  </div>
+  <div class="alert alert-success tableofcontent">
+    <h2 class="alert-header">Mục lục</h2>
+    <div id="toc">
+    </div>
+  </div>
+  <center>
+  {% include '_navigation.html'  %}
+
+  </center>
+  <div class="col-md-10">
+    
+      <div class="modal fade" id="Editable" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      {% include '_searchmodal.html'  %} 
+      </div>
+  
+    <div class="card card-lg" style="margin: 10;" id="mainView">
+      <div class="col-xl-2 col-sm-4">
+      </div>
+      <div class="card-header justify-content-center">
+        <div class="back_button">
+          <a type="button" class="btn" href="/collection/{{collection.id}}">
+            <!-- Download SVG icon from http://tabler-icons.io/i/info-circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9" /><line x1="12" y1="8" x2="12.01" y2="8" /><polyline points="11 12 12 12 12 16 13 16" /></svg>
+            Trang tác phẩm
+          </a>
+        </div>
+        <div class="option-button">
+          <a type="button" class="btn" data-bs-toggle="dropdown">
+            Tùy chọn 
+          </a>
+          <div class="dropdown-menu dropdown-menu-demo dropdown-menu-arrow bg-dark text-white">
+                <label class="form-selectgroup-item" >
+                  <input class="form-selectgroup-input" name={{chapter.id}} type="checkbox" {{ "checked" if chapter.bookmark else  "" }} onchange="
+                  if (this.checked == true ) {
+                    document.getElementById('bookmarkButton').textContent='Xóa đánh dấu ❌';
+                    let data = {chapter:this.name, value:'add'};
+                    axios.post('/api/bookmark/', data).then((res)=>{console.log(res)})
+
+                  }  
+                  else {
+                    document.getElementById('bookmarkButton').textContent='Đánh dấu chương 📑';
+                    let data= {chapter:this.name, value:'remove'}
+                    axios.post('/api/bookmark/', data).then((res)=>{console.log(res)})
+
+                    }
+                  ">
+                  
+                  <span class="form-selectgroup-label" id="bookmarkButton">{{ "Xóa đánh dấu ❌" if chapter.bookmark else "Đánh dấu chương 📑"}}</span>
+                </label>
+              <a href="#" data-toggle="modal" data-target="#Editable" class="dropdown-item">
+                Search Function
+              </a>
+          </div>
+        </div>
+        <div class="card-title">
+          {{ chapter.name }}
+        </div>
+
+      </div>
+      <div class="card-body">
+        
+
+
+        <div id="collectionID" data="{{collection.id}}"></div>
+        <div id="currentChapter" data="{{chapter.id}}"></div>
+        <div class="card-title" id="exampleModalLabel"></div>
+        
+        <div class="main-content" id=mainContent>
+          {{ chapter.content | render}}
+        </div>
+      </div>
+    </div>
+    <center>
+      {% include '_navigation.html'  %}
+    </center>
+  </div>
+  
+</div>
+
+</div>
+<script>
+let mainContent = document.getElementById('mainContent')
+let headers = mainContent.querySelectorAll("h2")
+let toc = document.getElementById('toc')
+for (header of headers) {
+    header.id = string_to_slug(header.outerText)
+    let link = document.createElement('a')
+    link.href = "#"+ header.id 
+    link.textContent = header.outerText
+    link.className = "dropdown-item"
+    toc.appendChild(link)
+}
+
+function slugGen(input) {
+    let string = String(input)
+    return string.replace(/[#_]/g, "_")
+}
+console.log(slugGen("hello world?"))
+
+
+function string_to_slug (str) {
+    str = str.replace(/^\s+|\s+$/g, ''); // trim
+    str = str.toLowerCase();
+  
+    // remove accents, swap ñ for n, etc
+    var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+    var to   = "aaaaeeeeiiiioooouuuunc------";
+    for (var i=0, l=from.length ; i<l ; i++) {
+        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    }
+
+    str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        .replace(/\s+/g, '-') // collapse whitespace and replace by -
+        .replace(/-+/g, '-'); // collapse dashes
+
+    return str;
+}
+</script>
+
+{% endblock %}

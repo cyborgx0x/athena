@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8 ">
+        <div class="row">
+        <div class="col-md-4">
+            {% block layoutleft %}
+            {% endblock %}
+        </div>
+        <div class="col-md-8">
+            {% block layoutcenter %}
+            {% endblock %}   
+        </div>
+        </div>
+        
+    </div>
+    <div class="col-lg-4">
+        {% block layoutright %}
+        {% endblock %}
+    </div>
+</div>
+
+<script>
+    document.getElementById(location.hash.replace('#','')).className='tab-pane active show'
+    removeActiveState();
+    document.getElementById(location.hash.replace('#','')).className+=" active show"
+    location.hash=location.hash.replace('#','')
+    function removeActiveState() {
+        let file = document.getElementById('tab-content').querySelectorAll('.tab-pane.active.show')
+        console.log(file)
+        for (item in file)  {
+            try {
+                file[item].className='tab-pane'
+            }
+            catch{(err)=>{
+                console.log(err.message)
+            }}
+            
+        }
+    }
+    function showMedia(context) {
+        removeActiveState();
+        let buttonContext = context.parentNode.querySelectorAll('.dropdown-item.active')
+        for (item in buttonContext) {
+            try {
+                buttonContext[item].className='dropdown-item'
+            }
+            catch{
+                (err)=>{
+                    console.log(err.message)
+                }
+            }
+        }
+        console.log(context.value)
+        document.getElementById(context.value).className+=" active show"
+        context.className+=' active';
+        location.hash=context.value
+    }
+</script>
+{% endblock %}

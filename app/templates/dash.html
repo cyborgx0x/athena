@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block title %} Dashboard {% endblock %}
+{% block layoutleft %}
+
+<div  style="margin:5px">
+    <div class="bg-dark text-white">
+        <button class="dropdown-item" onclick="showMedia(this)" value='your-collection'>Quản lý tác phẩm</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value='user-profile'>Chỉnh sửa hồ sơ</button>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block layoutcenter %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="tab-content" id="tab-content">
+           
+            <div class="tab-pane show active" id="your-collection">
+                <a href="{{url_for('new_collection')}}" type="button" class="btn">Tạo tác phẩm mới</a>
+                <h2> Click vào link để edit tác phẩm </h2>
+                {% for collection in all_collections %}
+                    <a href="{{url_for('edit_collection', id=collection.id)}}" class="nav-link">{{collection.name}}</a>
+                {% endfor %}
+            </div>
+            <div class="tab-pane" id="user-profile">
+                <a href="{{url_for('edit_user', id=user.id)}}" class="nav-link">Chỉnh sửa hồ sơ người sáng tạo</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById(location.hash.replace('#','')).className='tab-pane active show'
+    removeActiveState()
+    document.getElementById(location.hash.replace('#','')).className+=" active show"
+    location.hash=location.hash.replace('#','')
+</script>
+{% endblock %}
+
+{% block layoutright %}
+<div class="card">
+    <div class="card-body p-4 text-center bg-dark text-white">
+        <span class="avatar avatar-xl mb-3 avatar-rounded" height="1.2rem">
+            <img src="{{user.avatar}}" alt="" style="width:100%;height:auto" class="avatar avatar-xl mb-3 avatar-rounded" id="avatar">
+        </span>
+        <h3 class="m-0 mb-1" style="height: 30; color:white;">
+                {{user.name}}</h3>
+        <div class="text-muted" style="height: 30; color:white;" id="lastseen">Lần online gần nhất: {{user.last_seen}}</div>
+
+        <a href="/following/">Tác giả đang theo dõi</a>
+        <a href="/liked/">Tác phẩm đã yêu thích</a>
+        <div class="mt-3">
+            
+            <span class="badge bg-purple">
+                Đang theo dõi: {{user.following | count}} 
+            </span>
+            <span class="badge bg-cyan">
+                Được theo dõi: {{user.follower | count}} 
+            </span>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

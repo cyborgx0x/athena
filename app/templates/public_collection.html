@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ collection.name }}{% endblock %}
+{% block content%}
+
+<div class="row">
+    <div class="col-lg-8 ">
+        <div class="row">
+        <div class="col-md-4">
+            <div  style="margin:5px">
+                {% if current_user.id == collection.creator_id %}
+                <a href="{{url_for("edit_collection", id=collection.id)}}" class="btn">Quản lý tác phẩm</a>
+                {% else %}
+                {% endif %}
+            </div>
+            {% include "_collection.html"  %}
+            
+        </div>
+            <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="alert-heading"><strong>{{collection.name}}</strong> </h2>
+                    <strong>Tác giả: 
+                        <a href="/creator/{{ collection.owner.id }}" class="btn">
+                        <span class="avatar">
+                            <img src="{{ collection.owner.avatar }}" alt="" style="width:100%;height:auto">
+                        </span>
+                            {{ collection.owner.name }}
+                        </a>
+                    </strong>
+                    <p><strong>Xuất bản: {{ collection.publish_year}}</strong></p>
+                    <p class="mb-0">Số chương <b>{{ collection.media | count }}</b></p>
+                </div>
+            </div>
+            <div style="margin-top: 30px; background: white">
+                <div class="card-header">
+                    <h2>
+                        <strong>Lời tựa</strong>
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="main-content" id="detailInfomation">
+                        {{ collection.desc | render }}
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        </div>
+        
+    </div>
+
+    <div class="col-lg-4">
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <strong>
+                        Danh sách chương 
+                    </strong>
+                </h2>
+            </div>
+            <div class="card-body" style="overflow: hidden;">
+                {% for media in collection.media %}
+                {% include '_media_list.html'  %}   
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+        
+    </div>
+</div>
+
+
+{% endblock %}

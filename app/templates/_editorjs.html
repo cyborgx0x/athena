@@ -1,0 +1,61 @@
+<div class="toast-body" id="update_message">
+    Vui lòng nhấn nút sau khi chỉnh sửa nội dung ở dưới
+</div>
+<button id="saveButton" class="btn btn-success">
+    <!-- Download SVG icon from http://tabler-icons.io/i/send -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="10" y1="14" x2="21" y2="3" /><path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5" /></svg>
+    Save
+</button>
+<div id="editorjs"></div>
+    <script src="{{url_for('static', filename='editorjs@latest.js')}}"></script>
+    <script src="{{url_for('static', filename='header@latest.js')}}"></script>
+    <script src="{{url_for('static', filename='list@latest.js')}}"></script>
+    <script>
+        axios.post('', {type:"content"})
+        .then((response) => {
+            try {
+                console.log(response.data)
+                let data = response.data
+                const editor = new EditorJS({data: data, tools:{
+                    list: {
+                    class: List,
+                    inlineToolbar: true,
+                  },
+                  header:Header}});
+                let saveButton = document.getElementById('saveButton');
+                saveButton.addEventListener('click', function(e)  {editor.save().then((output)=>{
+                    let upload = {
+                        type:"upload",
+                        value:output
+                    }
+                    axios.post('', upload).then(function(response) {
+                        document.getElementById('update_message').textContent=response.data;
+                    })
+                })
+
+                });
+            }
+            catch (err) {
+                console.log(err.message)
+                console.log("your content is missing, create new one")
+                let data = {"time": 1620131235504, "blocks": [ {"id": "yIvyfJ0l8Y", "type": "paragraph", "data": {"text": "Vui lòng tạo mới nội dung"}}], "version": "2.21.0"}
+                const editor = new EditorJS({data:data});
+                let saveButton = document.getElementById('saveButton');
+                saveButton.addEventListener('click', function() {editor.save()
+                    .then((output)=>{
+                        console.log(output);
+                        let upload = {
+                            type:"upload",
+                            value:output
+                        }
+                        axios.post('', upload).then(function(response) {
+                            document.getElementById('update_message').textContent=response.data;
+                        })
+                })
+
+                });
+            }
+        })
+        .catch((err)=>console.log(err.message))
+        
+    </script>

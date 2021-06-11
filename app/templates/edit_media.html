@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Edit Chapter{% endblock %}
+
+{% block layoutleft %}
+<div  style="margin:5px">
+    <div class="bg-dark text-white">
+        <a class="dropdown-item" href="{{url_for('edit_collection', id=chapter.collection_id)}}#manage-chapter">Trở về quản lý tác phẩm</a>
+        <a class="dropdown-item" href="{{url_for('public_media', id=chapter.id)}}#manage-chapter">Đọc chương này</a>
+        <button class="dropdown-item" onclick="showMedia(this)" value="edit_chapter">Chỉnh sửa</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="chapter_statistic">Thông tin thống kê</button>
+    </div>
+</div>
+{% endblock %}
+{% block layoutcenter %}
+<div class="card"> 
+    <div class="card-body">
+        <div class="tab-content" id="tab-content">
+
+            <div class="tab-pane active show" id="edit_chapter">
+                <div class="alert" role="alert" id="alert-theme">
+                    <h4 class="alert-heading"  id="alert-information"> Mỗi mục đều riêng biệt. Khi chỉnh sửa xong vui lòng nhấn enter </h4>
+                </div>
+                <div class="form-group">
+                    <label for="chapter_name">Tiêu đề chương</label>
+                    <input type="text" class="form-control" name="chapter_name" id="chapter_name" value="{{chapter.name}}">
+                    <!-- <label for="chapter_order">Thứ tự</label>
+                    <input type="text" class="form-control" name="chapter_order" id="chapter_order" value="{{chapter.chapter_order}}"> -->
+
+                </div>
+                {% include "_editorjs.html" %}
+            </div>
+            <div class="tab-pane" id="chapter_statistic">
+                <h1> Số liệu chương </h1>
+                Lượt đọc: 
+                <span class="badge bg-cyan">
+                    {{chapter.view}} 👁 views, {{chapter.mediaaction| count}} 📜 đánh dấu
+                </span> </a> 
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let input = document.getElementById('edit_chapter').querySelectorAll('.form-control')
+    for (let i=0; i<input.length;i++) {
+        input[i].addEventListener('change', (e)=>{
+            axios.post('', {type:e.target.name, value:e.target.value})
+            .then((res)=>{
+                document.getElementById('alert-information').textContent='Result: ' + res.data;
+                document.getElementById('alert-theme').className = 'alert alert-success';
+            })
+            .catch((err)=>{
+                document.getElementById('alert-information').textContent=err.message
+                document.getElementById('alert-theme').className = 'alert alert-danger'
+            })
+        })
+    }
+    function saveContent(context) {
+        console.log('test')
+    }
+</script>
+{% endblock %}
+{% block layoutright %}
+
+{% endblock %}

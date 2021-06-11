@@ -1,0 +1,17 @@
+<div class="card" style="margin:5px">
+  <div class="crop"  type="button" onclick="location.href='/collection/{{collection.id}}/'">
+    <img src="{% if collection.cover %}{{url_for('img_proxy', link=collection.cover)}}{% else %} https://firebasestorage.googleapis.com/v0/b/ngot-technology.appspot.com/o/book-cover%2Fsample.jpg?alt=media&token=4c780b66-0c22-41eb-9fde-51973b421815{% endif %}" alt="{{collection.name}}" style="width:100%; height:auto">
+    <div class="blend-over">
+      <h2><a href="{{url_for('public_collection', id=collection.id)}}">{{collection.name}}</a></h2>
+      <p>{{collection.owner.name}}</p>
+    </div>
+   
+  </div>
+  <button type="button" class="love" name="collection" value="nolove" id="col-{{collection.id}}" style="color:rgba(255,255,255,0.5);" onclick="addLove(this)">❤</button>
+  <span class="badge bg-green" style="position: absolute; top:10px; right:10px">
+    has {{ collection.collectionaction | count }} ❤    
+  </span>
+  </div>
+
+
+  

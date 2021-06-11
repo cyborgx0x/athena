@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} Ranking {% endblock %}
+{% block content%}
+
+<div class="row row-deck">
+  <h1>All Collections</h1>
+  {% for collection in all_collections %}
+  <div class="col-6 col-md-2">
+
+  {% include '_collection.html'  %}   
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}

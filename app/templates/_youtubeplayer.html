@@ -1,0 +1,10 @@
+<video
+        id="vid1"
+        class="video-js vjs-default-skin"
+        controls
+        width="480" height="264"
+        data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "{{ url }}"}] }'
+    >
+</video>
+<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+<script src="{{url_for('static', filename='Youtube.min.js')}}"></script>

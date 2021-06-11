@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+{% block title %}{{ collection.name }} by {{collection.owner.name }}{% endblock %}
+
+{% block layoutleft %}
+<div  style="margin:5px">
+    <div class="bg-dark text-white">
+        <a class="dropdown-item" href="/dashboard/"> 
+            <!-- Download SVG icon from http://tabler-icons.io/i/arrow-back-up -->
+	        <button class=btn>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1" /></svg>   
+                Trang quản lý
+            </button>
+        </a>
+        <a class="dropdown-item" href="/collection/{{collection.id}}">Xem trang tác phẩm</a>
+        <button class="dropdown-item" onclick="showMedia(this)" value="edit-collection">Chỉnh sửa thông tin</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="manage-chapter">Quản lý chương</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="edit-foreword">Chỉnh sửa lời tựa 📝</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="collection-configuration">Cài đặt chung</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="collection-statistic">Thống kê</button>
+        <button class="dropdown-item" onclick="showMedia(this)" value="collection-history">Lịch sử chỉnh sửa</button>
+
+    </div>
+</div>
+{% endblock %}
+{% block layoutcenter %}
+
+<div class="card"> 
+    <div class="card-body">
+        
+        <div class="tab-content" id="tab-content">
+            <div class="tab-pane" id="manage-chapter">
+                <div>
+                    <a  class="btn" href={{url_for('new_chapter', collection_id=collection.id)}}>Tạo Chương Mới</a>
+                </div>
+                <h2>Bấm vào link để chỉnh sửa chương</h2>
+                {% for chapter in collection.media %}
+                <li class="dropdown-item">  
+                    <a href="{{url_for('edit_media', id=chapter.id)}}" class="link-info large">{{chapter.name}}</a> 
+                    <a href="{{url_for('delete_chapter', id=chapter.id)}}" style="position: relative; padding-left:30px ">Xóa chương này</a>
+                </li>                
+                {% endfor %}
+            </div>
+            <div class="tab-pane" id="edit-foreword">
+                <!-- <button type="button" class="btn btn-danger" onclick="loadEditor(this)" name="init-button" value="init">Load Editor</button> -->
+                {% include "_editorjs.html"%}
+            </div>
+            <div class="tab-pane active show" id="edit-collection">
+                <div class="alert" role="alert" id="alert-theme">
+                    <h4 class="alert-heading"  id="alert-information"> Mỗi mục đều riêng biệt. Khi chỉnh sửa xong vui lòng nhấn enter </h4>
+                </div>
+                <div class="form-group">
+                    <label for="collection_name">Tiêu đề tác phẩm</label>
+                    <input type="text" class="form-control" name="collection_name" id="collection_name" value="{{collection.name}}">
+                    <label for="publist_year">Năm xuất bản</label>
+                    <input type="text" class="form-control" name="publish_year" id="publish_year" value="{{collection.publish_year}}">
+                    <label for="tag-manage">Thể loại</label>
+                    <input type="text" name="tag-manage" id="tag-manage" value="{{collection.tag}}" class="form-control">
+                    <label for="link-download">Link tải sách</label>
+                    <input type="text" name="link-download" id="link-download" value="{{collection.mediafire_link}}" class="form-control">
+                    <label for="book-cover">Bìa sách</label>
+                    <input type="text" name="book-cover" id="book-cover" value="{{collection.cover}}" class="form-control">
+                    <label for="short-desc">Mô tả ngắn</label>
+                    <input type="text" name="short-desc" id="short-desc" value="{{collection.short_desc}}" class="form-control">
+                    
+                </div>
+                
+            </div>
+            
+            <div class="tab-pane" id="collection-configuration">
+                <script>
+                    function saveContent(context) {
+                        console.log(context.options[context.options.selectedIndex].value)
+                        axios.post('', {type:context.name, value:context.options[context.options.selectedIndex].value}).then((res) => {
+                            alert(res.data)
+                        })
+                    }
+                </script>
+                <h1>Cài đặt chung</h1>
+                
+                <label for="collection-theme">Lựa chọn hiển thị</label>
+                <select name="collection-theme" id="collection-theme" class="form-control" aria-label="Fiction Theme" onchange="saveContent(this)">
+                    <option value="modern">Hiện đại</option>
+                    <option value="classic" selected>Cổ điển</option>
+                    <option value="creative">Phá cách</option>
+                </select>
+            </div>
+            <div class="tab-pane" id="collection-history">
+                <h1>Lịch sử chỉnh sửa: </h1>
+                <span class="badge bg-blue">có {{collection.history | count}} lượt chỉnh sửa</span>
+                {{ collection.history | pprint }}
+               
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Day</th>
+                            <th scope="col">Who</th>
+                            <th scope="col">Content</th>
+                            <th scope="col">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for history in collection.history %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{history.time}}</td>
+                            <td>{{history.user.user_name}}</td>
+                            <td>{{history.content}}</td>
+                            <td>{{history.type}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+            <div class="tab-pane" id="collection-statistic">
+                <h1> Trực tiếp </h1>
+
+                    Bookmark Rightnow: 
+                    {% for chapter in collection.chapter %}
+                    <span class="badge bg-pink">
+                    {{ chapter.name }} -  {{chapter.bookmark | count }} bookmark
+                    </span>
+                    {% endfor %}
+                <hr>
+                <h1> Toàn thời gian </h1>
+                {{collection.view}} lượt xem trang
+                <br>
+                <span class="badge bg-green">
+                    has {{ collection.like | count }} ❤ heart  
+                </span>
+                <span class="badge bg-red">
+                    has {{ collection.media | count }} 📷 media
+                </span>
+                <span class="badge bg-blue">
+                    has {{ collection.quote | count }} 📄 quotes
+                </span>
+                <span class="badge bg-indigo">
+                    has {{ collection.chapter | count }} 📜 chapter
+                </span>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    
+    function loadEditor(context) {
+        axios.post('', {type:context.value}).then((res)=>{
+            let editor = res.data
+            console.log(res.data)
+            context.parentNode.innerHTML=editor
+        })
+    }
+    let input = document.getElementById('edit-collection').querySelectorAll('.form-control')
+    console.log(input)
+    for (let i=0; i<input.length;i++) {
+        console.log(input[i])
+        input[i].addEventListener('change', (e)=>{
+            console.log(e.target.name)
+            axios.post('', {type:e.target.name, value:e.target.value})
+            .then((res)=>{
+                console.log(res);
+                document.getElementById('alert-information').textContent='Result: ' + res.data;
+                document.getElementById('alert-theme').className = 'alert alert-success';
+            })
+            .catch((err)=>{
+                console.log(err.message);
+                document.getElementById('alert-information').textContent=err.message
+                document.getElementById('alert-theme').className = 'alert alert-danger'
+            })
+        })
+    }
+
+</script>
+{% endblock %}
+{% block layoutright %}
+<div class="card">
+    <div class="card-body">
+        <label for="collection-status">Trạng thái xuất bản</label>
+                {% if collection.status == "draft" %}
+                <select name="collection-status" id="collection-status" class="form-control" aria-label="Fiction Status" onchange="saveContent(this)">
+                    <option value="public">Công khai</option>
+                    <option value="draft" selected>Bản nháp</option>
+                </select>
+                {% else %}
+                <select name="collection-status" id="collection-status" class="form-control" aria-label="Fiction Status" onchange="saveContent(this)">
+                    <option value="public" selected>Công khai</option>
+                    <option value="draft">Bản nháp</option>
+                </select>
+                {% endif %}
+    </div>
+</div>
+{% endblock %}

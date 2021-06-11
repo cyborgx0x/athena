@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Khám Phá{% endblock %}
+{% block content %}
+<div class="row row-deck">
+
+  <div class="col-md-8">
+      {% for collection in top_view_collections %}
+      <div class="col-6 col-md-3">
+
+        {% include '_collection.html'  %}   
+        </div>
+      {% endfor %}
+  </div>
+  <div class="col-md-4">
+    <div class="row row-deck">
+      <span class="badge bg-cyan">Được đề xuất</span>
+        {% for user in top_creators %} 
+            <div class="col-6">
+              {% include '_creator.html'  %}
+            </div>
+        {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}

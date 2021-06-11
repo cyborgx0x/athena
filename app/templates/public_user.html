@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ user.name}}: All collections{% endblock %}
+{% block style %} 
+{{super()}}
+<style>
+    .collection-zone{
+        padding-left: 20px;
+    }
+</style>
+{% endblock %}
+{% block content%}
+
+<div class="row justify-content-start">
+    <div class="col-md-4">
+        {% if current_user.id == user.id %}
+        <a href="{{url_for('edit_user', id=user.id)}}" class="btn">Chỉnh sửa tác giả 🔥</a>
+        {% else %}
+        {% endif %}
+        {% include "_creator.html"%}
+        
+        
+    </div>
+    
+    <div class="col-md-8">
+
+        <div class="card">
+            <div class="card-header">Tác giả: {{user.name}}</div>
+            <div class="card-body" id="creatorInformation" onload="loadAbout(this)">
+                <div class="main-content">
+                    📄 Tiểu sử tác giả: 
+                    {{ user.about_me | render | safe}}
+                </div>
+            </div>
+
+            <hr>
+            <div class="collection-zone">
+                
+                <h2 style="align-items: center;">
+                    Tác phẩm theo thời gian
+                </h2>
+                {% for collection in collections %}
+            
+                <h3>Năm xuất bản: {{collection.publish_year}}</h3>
+                <div class="row">
+                    <div class="col-xl-4 col-sm-4">
+                        <img src={{url_for("img_proxy", link=collection.cover )}} alt={{collection.name}}>
+                    </div>
+                    
+                    <div class="col-xl-8 col-sm-8">
+                        
+                        <h3 class="card-title"><a href="/collection/{{collection.id}}">{{collection.name}}</a></h3>
+                        {% for media in collection.media %}
+                            {% include "_media_list.html" %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
