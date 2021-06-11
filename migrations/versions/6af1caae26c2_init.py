@@ -1,8 +1,8 @@
-"""remove actiontype
+"""init
 
-Revision ID: 32f5e35d424b
+Revision ID: 6af1caae26c2
 Revises: 
-Create Date: 2021-05-17 06:43:45.936880
+Create Date: 2021-06-12 01:19:39.455975
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '32f5e35d424b'
+revision = '6af1caae26c2'
 down_revision = None
 branch_labels = None
 depends_on = None
