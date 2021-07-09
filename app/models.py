@@ -10,7 +10,6 @@ import json
 meta = MetaData()
 
 
-
 @dataclass
 class Collection(db.Model):
     
@@ -23,12 +22,13 @@ class Collection(db.Model):
     '''
     id:int = Column(Integer, primary_key=True, autoincrement=True)
     name:str = Column(Unicode(300))
+    author:str = Column(Unicode(300))
+    tag:str = Column(Unicode(300))
     status = Column(Unicode(300), default ="draft")
     short_desc:str = Column(String(160))
     desc = Column(JSON)
     cover = Column(Text)
     publish_year = Column(Integer)
-    tag:str = Column(Unicode(300))
     type = Column(String(50))
     '''
     statistic zone
@@ -42,9 +42,9 @@ class Collection(db.Model):
     collectionaction = db.relationship('CollectionAction', backref ='collection_love')
     def create(self, *args, **kwargs):
         pass
-    def render(self):
-        
-        pass
+    def tag_render(self):
+        passing_array = self.tag.split(",")
+        return passing_array
     def save(self, passing):
         '''
         take an passing data and set the instance data to the passing data, return message to the user
@@ -54,7 +54,7 @@ class Collection(db.Model):
         print(self.desc['blocks'])
         return "success"
 
-    
+
 @dataclass
 class Media(db.Model):
     '''

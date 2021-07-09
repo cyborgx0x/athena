@@ -19,15 +19,21 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="alert-heading"><strong>{{collection.name}}</strong> </h2>
-                    <strong>Tác giả: 
-                        <a href="/creator/{{ collection.owner.id }}" class="btn">
-                        <span class="avatar">
-                            <img src="{{ collection.owner.avatar }}" alt="" style="width:100%;height:auto">
-                        </span>
-                            {{ collection.owner.name }}
+                    <p>Tác giả: 
+                        <a href="/author/{{ collection.author }}" class="btn btn-danger">
+                            {{ collection.author }}
                         </a>
-                    </strong>
-                    <p><strong>Xuất bản: {{ collection.publish_year}}</strong></p>
+                    </p>
+                    <p><strong>Thể loại: </strong>{{ collection.type }}</p>
+                    <p><strong>Thẻ đánh dấu: </strong>
+                        {% with %}
+                        {% set tags = collection.tag_render() %}
+                        {% for tag in tags %}
+                        <span class="badge bg-blue"><a href="/tag/{{ tag }}" class="text-white">{{ tag }}</a></span>
+                        {% endfor %}
+                        {% endwith %}
+                    </p>
+                    <p><strong>Xuất bản: <a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong></p>
                     <p class="mb-0">Số chương <b>{{ collection.media | count }}</b></p>
                     <a class="btn btn-success" href="#">
                         <!-- Download SVG icon from http://tabler-icons.io/i/cloud-download -->

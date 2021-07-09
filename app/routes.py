@@ -95,7 +95,7 @@ def following_user():
 @app.route("/all_collections")
 def all_collections():
     all_collections = Collection.query.filter_by(status="public")
-    return  render_template("all_collections.html", all_collections = all_collections)
+    return  render_template("all_collections.html", all_collections = all_collections, title =  "Tất cả tác phẩm")
 
 @app.route("/liked/")
 def liked_collection():
@@ -107,6 +107,12 @@ def liked_collection():
 def public_collection(id):
     collection = Collection.query.filter_by(id=id).first()
     return  render_template("public_collection.html", collection = collection)
+
+@app.route("/author/<author_name>")
+def author_viewẻ(author_name):
+    collections = Collection.query.filter_by(author = author_name)
+    return render_template("all_collections.html", all_collections = collections, title = author_name +  ": Tất cả tác phẩm")
+
 
 @app.route("/edit/collection/<int:id>/", methods=['GET', 'POST'])
 @login_required
@@ -138,10 +144,11 @@ def edit_collection(id):
             collection.tag = incoming_data["value"]
             db.session.commit()
             return "tag updated"
-        elif incoming_data["type"] == "link-download":
-            collection.mediafire_link = incoming_data["value"]
+        elif incoming_data["type"] == "author":
+            input_author = incoming_data["value"]
+            collection.author = input_author
             db.session.commit()
-            return "link download updated"
+            return "added author"
         elif incoming_data["type"] == "book-cover":
             collection.cover = incoming_data["value"]
             db.session.commit()

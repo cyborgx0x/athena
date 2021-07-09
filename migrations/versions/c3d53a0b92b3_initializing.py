@@ -1,8 +1,8 @@
-"""init
+"""initializing
 
-Revision ID: 6af1caae26c2
+Revision ID: c3d53a0b92b3
 Revises: 
-Create Date: 2021-06-12 01:19:39.455975
+Create Date: 2021-07-10 02:47:58.488343
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6af1caae26c2'
+revision = 'c3d53a0b92b3'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,12 +33,13 @@ def upgrade():
     op.create_table('collection',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.Unicode(length=300), nullable=True),
+    sa.Column('author', sa.Unicode(length=300), nullable=True),
+    sa.Column('tag', sa.Unicode(length=300), nullable=True),
     sa.Column('status', sa.Unicode(length=300), nullable=True),
     sa.Column('short_desc', sa.String(length=160), nullable=True),
     sa.Column('desc', sa.JSON(), nullable=True),
     sa.Column('cover', sa.Text(), nullable=True),
     sa.Column('publish_year', sa.Integer(), nullable=True),
-    sa.Column('tag', sa.Unicode(length=300), nullable=True),
     sa.Column('type', sa.String(length=50), nullable=True),
     sa.Column('view', sa.Integer(), nullable=True),
     sa.Column('creator_id', sa.Integer(), nullable=True),
