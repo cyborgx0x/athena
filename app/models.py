@@ -27,7 +27,7 @@ class Collection(db.Model):
     status = Column(Unicode(300), default ="draft")
     short_desc:str = Column(String(160))
     desc = Column(JSON)
-    cover = Column(Text)
+    cover:str = Column(Text)
     publish_year = Column(Integer)
     type = Column(String(50))
     '''
