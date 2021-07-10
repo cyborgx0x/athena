@@ -26,12 +26,16 @@
                     </p>
                     <p><strong>Thể loại: </strong>{{ collection.type }}</p>
                     <p><strong>Thẻ đánh dấu: </strong>
+                        {% if collection.tag == None %}
+                        No Tag
+                        {% else %}
                         {% with %}
                         {% set tags = collection.tag_render() %}
                         {% for tag in tags %}
                         <span class="badge bg-blue"><a href="/tag/{{ tag }}" class="text-white">{{ tag }}</a></span>
                         {% endfor %}
                         {% endwith %}
+                        {% endif %}
                     </p>
                     <p><strong>Xuất bản: <a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong></p>
                     <p class="mb-0">Số chương <b>{{ collection.media | count }}</b></p>
