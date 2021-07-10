@@ -40,7 +40,7 @@ function addLove(context) {
     let col_id = context.id.slice(4)
     if (context.value == "love") {
         context.value = "nolove";
-        context.style.color = "rgba(255,255,255,0.8)";
+        context.style.color = "rgba(255,255,255,1)";
         updateLove(context, col_id)
     }
     else {
