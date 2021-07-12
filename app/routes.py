@@ -120,10 +120,19 @@ def public_collection(id):
     return  render_template("public_collection.html", collection = collection)
 
 @app.route("/author/<author_name>")
-def author_viewẻ(author_name):
+def author_view(author_name):
     collections = Collection.query.filter_by(author = author_name)
     return render_template("all_collections.html", all_collections = collections, title = author_name +  ": Tất cả tác phẩm")
 
+@app.route("/year/<publish_year>")
+def year_view(publish_year):
+    collections = Collection.query.filter_by(publish_year = publish_year)
+    return render_template("all_collections.html", all_collections = collections, title = publish_year +  ": Tất cả tác phẩm")
+
+@app.route("/tag/<tag>")
+def tag_view(tag):
+    collections = Collection.query.filter(Collection.tag.like("%" + tag + "%"))
+    return render_template("all_collections.html", all_collections = collections, title = tag +  ": Tất cả tác phẩm")
 
 @app.route("/edit/collection/<int:id>/", methods=['GET', 'POST'])
 @login_required
