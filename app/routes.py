@@ -17,7 +17,7 @@ from datetime import datetime
 
 @app.route("/")
 def index():
-    top_view_collections = Collection.query.filter_by(status="public").limit(20).all()
+    top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.id.asc()).limit(20).all()
     top_creators = User.query.limit(12).all()
     return  render_template("home.html", top_view_collections = top_view_collections, top_creators=top_creators)
 
@@ -159,6 +159,10 @@ def edit_collection(id):
             return "Mô tả ngắn được cập nhật"
         elif incoming_data["type"] == "collection-author":
             collection.author_id = incoming_data["value"]
+            db.session.commit()
+            return "Đã cập nhật tác giả"
+        elif incoming_data["type"] == "download":
+            collection.download = incoming_data["value"]
             db.session.commit()
             return "Đã cập nhật tác giả"
         elif incoming_data["type"] == "collection-status":

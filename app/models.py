@@ -30,6 +30,7 @@ class Collection(db.Model):
     cover:str = Column(Text)
     publish_year = Column(Integer)
     type = Column(String(50))
+    download = Column(Unicode(500))
     '''
     statistic zone
     '''
@@ -43,7 +44,7 @@ class Collection(db.Model):
     def create(self, *args, **kwargs):
         pass
     def tag_render(self):
-        passing_array = self.tag.split(",")
+        passing_array = self.tag.split(", ")
         return passing_array
     def save(self, passing):
         '''
