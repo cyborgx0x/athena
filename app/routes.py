@@ -21,6 +21,17 @@ def index():
     top_creators = User.query.limit(12).all()
     return  render_template("home.html", top_view_collections = top_view_collections, top_creators=top_creators)
 
+@app.route("/batch")
+def batch():
+    collections = Collection.query.filter_by(status="public").all()
+    for col in collections:
+        col.type = "book"
+        if col.tag:
+            col.tag += ", 100 Cuốn Sách Kinh Điển"
+        else: 
+            col.tag = "100 Cuốn Sách Kinh Điển"
+        db.session.commit()
+    return "success"
 
 @app.route('/privacy-policy')
 def pp():
