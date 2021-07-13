@@ -95,8 +95,7 @@ class User(UserMixin, db.Model):
     the owner of asset, this table contain the basic information of user, and connect user with the action he can do in the application
     such as: like, follow, create, update, delete. 
     '''
-
-    id:int = Column('id', Integer, primary_key=True)
+    id:int = Column(Integer, primary_key=True, autoincrement=True)
     facebook = Column(String(50))
     name = Column(Unicode(256))
     user_name:str = Column(String(64))
@@ -156,4 +155,3 @@ class UserAction(db.Model):
     type:str = Column(String(50))
     time = Column(DateTime, default = datetime.utcnow)
     content = Column(Text)
-
