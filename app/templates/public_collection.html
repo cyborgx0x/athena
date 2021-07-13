@@ -45,17 +45,21 @@
                     <p class="mb-0">Số chương <b>{{ collection.media | count }}</b></p>
                     <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
                     <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
-                    <a class="btn btn-success" href="{{ collection.download }}">
-                        <!-- Download SVG icon from http://tabler-icons.io/i/cloud-download -->
-	<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><line x1="12" y1="13" x2="12" y2="22" /><polyline points="9 19 12 22 15 19" /></svg>
-                        Tải về {{collection.name}} epub
-                    </a>
+                    <div>
+                        <a class="btn btn-success btn-pill" href="{{ collection.download }}">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/cloud-download -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><line x1="12" y1="13" x2="12" y2="22" /><polyline points="9 19 12 22 15 19" /></svg>
+                            Tải về {{collection.name}} epub
+                        </a>
+                    </div>
                     <br>
-                    <a class="btn btn-danger" href="#">
-                        <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
-	<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="6" cy="19" r="2" /><circle cx="17" cy="19" r="2" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
-                        Mua sách {{collection.name}}
-                    </a>
+                    <div>
+                        <a class="btn btn-danger btn-pill" href="#">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="6" cy="19" r="2" /><circle cx="17" cy="19" r="2" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                            Mua sách {{collection.name}}
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="fb-comments" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-numposts="10"></div>
@@ -93,21 +97,7 @@
                 {% include '_media_list.html'  %}   
                 {% endfor %}
             </div>
-        </div>
-        <div class="card" style="margin-top: 30px; background: white">
-            <div class="card-header">
-                <h2>
-                    <strong>
-                        Danh sách Review 
-                    </strong>
-                </h2>
-            </div>
-            <div class="card-body" style="overflow: hidden;">
-            </div>
-        </div>
-
-
-        
+        </div>    
     </div>
 </div>
 
