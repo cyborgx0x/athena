@@ -6,7 +6,7 @@ from flask_sqlalchemy import Model
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db, login
 import json
-
+import requests
 meta = MetaData()
 
 
@@ -54,6 +54,7 @@ class Collection(db.Model):
         name = incoming_data["type"]
         print(self.desc['blocks'])
         return "success"
+
 
 
 @dataclass
