@@ -184,7 +184,7 @@ def edit_collection(id):
         elif incoming_data["type"] == "download":
             collection.download = incoming_data["value"]
             db.session.commit()
-            return "Đã cập nhật tác giả"
+            return "Đã cập nhật link download"
         elif incoming_data["type"] == "collection-status":
             collection.status = incoming_data["value"]
             db.session.commit()

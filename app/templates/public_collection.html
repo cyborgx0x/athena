@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ collection.name }}{% endblock %}
+{% block meta %}
+<meta name="Description" content="{{ collection.short_desc }}">
+{% endblock %}
+
 {% block content%}
 
 <div class="row">
