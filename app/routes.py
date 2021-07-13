@@ -455,6 +455,6 @@ def register():
 @login_required
 def dashboard():
     user = User.query.filter_by(id=current_user.id).first_or_404()
-    all_collections = Collection.query.filter_by(creator_id=current_user.id)
+    all_collections = Collection.query.order_by(Collection.id.asc()).all()
     return render_template('dash.html', user=user, all_collections=all_collections)
 
