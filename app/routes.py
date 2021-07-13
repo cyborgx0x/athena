@@ -215,7 +215,7 @@ def public_media(id):
         chapter.view = 1
     db.session.commit()
     collection = chapter.collection
-    chapters = Media.query.filter_by(collection_id=collection.id).order_by(Media.name)
+    chapters = Media.query.filter_by(type="chapter", collection_id=collection.id).order_by(Media.name)
     return render_template('public_media.html', chapter = chapter, collection=collection, chapters = chapters)
 
 

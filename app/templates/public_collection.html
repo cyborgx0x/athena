@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <h2 class="alert-heading"><strong>{{collection.name}}</strong> </h2>
                     <p>Tác giả: 
-                        <a href="/author/{{ collection.author }}" class="btn btn-danger">
+                        <a href="/author/{{ collection.author }}" class="btn btn-primary">
                             {{ collection.author }}
                         </a>
                     </p>
@@ -48,8 +48,15 @@
 	<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><line x1="12" y1="13" x2="12" y2="22" /><polyline points="9 19 12 22 15 19" /></svg>
                         Tải về {{collection.name}} epub
                     </a>
+                    <br>
+                    <a class="btn btn-danger" href="#">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+	<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="6" cy="19" r="2" /><circle cx="17" cy="19" r="2" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                        Mua sách {{collection.name}}
+                    </a>
                 </div>
             </div>
+            <div class="fb-comments" data-href="{{url_for('public_collection', id = collection.id)}}" data-width="" data-numposts="10"></div>
             <div style="margin-top: 30px; background: white">
                 <div class="card-header">
                     <h2>
@@ -85,7 +92,17 @@
                 {% endfor %}
             </div>
         </div>
-
+        <div class="card" style="margin-top: 30px; background: white">
+            <div class="card-header">
+                <h2>
+                    <strong>
+                        Danh sách Review 
+                    </strong>
+                </h2>
+            </div>
+            <div class="card-body" style="overflow: hidden;">
+            </div>
+        </div>
 
 
         
