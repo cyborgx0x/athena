@@ -117,7 +117,8 @@ def liked_collection():
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
     collection = Collection.query.filter_by(id=id).first()
-    return  render_template("public_collection.html", collection = collection)
+    medias = Media.query.filter_by(collection_id=id).order_by(Media.id)
+    return  render_template("public_collection.html", collection = collection, medias = medias)
 
 @app.route("/author/<author_name>")
 def author_view(author_name):
@@ -214,7 +215,7 @@ def public_media(id):
         chapter.view = 1
     db.session.commit()
     collection = chapter.collection
-    chapters = Media.query.filter_by(collection_id=collection.id)
+    chapters = Media.query.filter_by(collection_id=collection.id).order_by(Media.name)
     return render_template('public_media.html', chapter = chapter, collection=collection, chapters = chapters)
 
 

@@ -24,6 +24,16 @@
 
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-407BD3MVGD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-407BD3MVGD');
+  </script>
+
   {% block style %}
   <style>
 
@@ -127,9 +137,6 @@
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
               </li>
-              <li class="nav-item">
-                <a class="btn" href="{{ url_for('login', next=url_for('new_collection')) }}">Đăng tác phẩm mới</a>
-              </li>
               {% else %}
               <li class="nav-item">
                 <a href="{{url_for('new_collection')}}" type="button" class="btn">Đăng tác phẩm mới</a>
@@ -139,7 +146,6 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-
               </li>
               {% endif %}
             
