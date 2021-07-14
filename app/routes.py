@@ -241,7 +241,7 @@ def edit_media(id):
             print(chapter.content)
             db.session.commit()
             return "Đã cập nhật nội dung chương"
-    if current_user.id == chapter.user_id:
+    if current_user.id == chapter.user_id or current_user.type == 1:
         return render_template('edit_media.html', chapter=chapter)
     else:
         return redirect(url_for("dashboard"))
