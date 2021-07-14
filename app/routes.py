@@ -274,8 +274,8 @@ Contain route about user authentication, profile, configuration and dashboard
 @app.route('/authorized', methods=['GET','POST'])
 def authorized():
     access_token = request.args.get("access_token")
-    print(access_token)
-    return redirect("/")
+    print("facebook")
+    return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['GET','POST'])
