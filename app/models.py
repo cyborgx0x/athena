@@ -61,7 +61,6 @@ class Collection(db.Model):
         img = self.cover
         crop_image = return_img(img)
         file_data = base64.b64encode(crop_image.getvalue()).decode()
-        print(file_data)
         data = {
             "image":file_data
         }
@@ -69,7 +68,6 @@ class Collection(db.Model):
         link = "https://api.imgbb.com/1/upload?key="
         response = requests.post(link+api, data=data)
         self.cover_data = response.json()    
-        print(self.cover_data)
 
 
 
