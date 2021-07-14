@@ -17,7 +17,12 @@
                 {% endif %}
             </div>
             {% include "_collection.html"  %}
-            
+            <div>
+                <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
+            </div>
+            <div>
+                <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
+            </div>
         </div>
             <div class="col-md-8">
             <div class="card">
@@ -46,12 +51,7 @@
                     {% else %}
                     {% endif %}
                     
-                    <div>
-                        <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
-                    </div>
-                    <div>
-                        <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
-                    </div>
+                    
                     <div>
                         <a class="btn btn-success btn-pill" href="{{ collection.download }}" target="_blank">
                             <!-- Download SVG icon from http://tabler-icons.io/i/cloud-download -->
