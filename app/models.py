@@ -39,11 +39,7 @@ class Collection(db.Model):
     '''
     view = Column(Integer)
     creator_id = Column(Integer, ForeignKey('user.id'))
-    '''
-    many to many relationship
-    '''
     media = db.relationship('Media', backref ='collection')
-    collectionaction = db.relationship('CollectionAction', backref ='collection_love')
     def create(self, *args, **kwargs):
         pass
     def tag_render(self):
@@ -98,11 +94,6 @@ class Media(db.Model):
     '''
     collection_id = Column(Integer, ForeignKey('collection.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
-    '''
-    many to many relationship
-    '''
-    mediaaction = db.relationship('MediaAction', backref ='media')
-
 
 
 @dataclass
@@ -126,10 +117,6 @@ class User(UserMixin, db.Model):
     '''
     media = db.relationship('Media', backref ='owner')
     collection = db.relationship('Collection', backref ='owner')
-    collectionaction = db.relationship('CollectionAction', foreign_keys='[CollectionAction.user_id]', backref ='user')
-    mediaaction = db.relationship('MediaAction', backref ='user')
-    do = db.relationship('UserAction', foreign_keys='[UserAction.user_id]', backref ='user_do')
-    affected = db.relationship('UserAction', foreign_keys='[UserAction.affected]', backref ='user_affected')
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     def check_password(self, password):
