@@ -170,8 +170,8 @@ def edit_collection(id):
             return "added author"
         elif incoming_data["type"] == "book-cover":
             collection.cover = incoming_data["value"]
-            db.session.commit()
             collection.render_cover()
+            db.session.commit()
             return "Đã cập nhật ảnh bìa"
         elif incoming_data["type"] == "short-desc":
             collection.short_desc = incoming_data["value"]
