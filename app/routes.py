@@ -175,7 +175,7 @@ def edit_collection(id):
             else:
                 return "Đã trở về bản nháp"
     print(current_user.id, collection.creator_id)
-    if current_user.id == collection.creator_id:
+    if current_user.id == collection.creator_id or current_user.type == 1:
         return  render_template("edit_collection.html", collection = collection)
     else:
         return  redirect(url_for("index"))
@@ -238,11 +238,12 @@ Contain interaction with the request from client
 
 @app.route("/editor/<int:collection_id>/new-chapter/", methods=['GET', 'POST'])
 def new_chapter(collection_id):
-    new_chapter = Media(name="New Media", collection_id=collection_id, user_id=current_user.id, type="chapter")
-    db.session.add(new_chapter)
-    db.session.commit()
-    db.session.refresh(new_chapter)
-    return redirect(url_for('edit_media', id=new_chapter.id))
+    if current_user == 1:
+        new_chapter = Media(name="New Media", collection_id=collection_id, user_id=current_user.id, type="chapter")
+        db.session.add(new_chapter)
+        db.session.commit()
+        db.session.refresh(new_chapter)
+        return redirect(url_for('edit_media', id=new_chapter.id))
 
 
 @app.route("/build_indexing/", methods=['GET', 'POST'])
@@ -258,11 +259,12 @@ def build_indexing():
 
 @app.route("/new_collection/", methods=['GET', 'POST'])
 def new_collection():
-    new_collection = Collection(name="Tác phẩm mới", status="draft", creator_id=current_user.id)
-    db.session.add(new_collection)
-    db.session.commit()
-    db.session.refresh(new_collection)
-    return redirect(url_for('edit_collection', id=new_collection.id))
+    if current_user == 1:
+        new_collection = Collection(name="Tác phẩm mới", status="draft", creator_id=current_user.id)
+        db.session.add(new_collection)
+        db.session.commit()
+        db.session.refresh(new_collection)
+        return redirect(url_for('edit_collection', id=new_collection.id))
 
 
 
