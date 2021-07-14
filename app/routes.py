@@ -238,7 +238,7 @@ Contain interaction with the request from client
 
 @app.route("/editor/<int:collection_id>/new-chapter/", methods=['GET', 'POST'])
 def new_chapter(collection_id):
-    if current_user == 1:
+    if current_user.type == 1:
         new_chapter = Media(name="New Media", collection_id=collection_id, user_id=current_user.id, type="chapter")
         db.session.add(new_chapter)
         db.session.commit()
@@ -259,7 +259,7 @@ def build_indexing():
 
 @app.route("/new_collection/", methods=['GET', 'POST'])
 def new_collection():
-    if current_user == 1:
+    if current_user.type == 1:
         new_collection = Collection(name="Tác phẩm mới", status="draft", creator_id=current_user.id)
         db.session.add(new_collection)
         db.session.commit()
