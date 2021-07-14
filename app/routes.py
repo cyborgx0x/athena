@@ -12,7 +12,7 @@ import requests
 from app import app, db
 from app.form import (LoginForm,
                       RegistrationForm)
-from app.models import (Collection, Media, User, UserAction)
+from app.models import (Collection, Media, User)
 from datetime import datetime
 
 @app.route("/")
@@ -261,32 +261,6 @@ def new_collection():
     db.session.refresh(new_collection)
     return redirect(url_for('edit_collection', id=new_collection.id))
 
-
-
-@app.route("/api/following/",methods=['GET', 'POST'])
-def update_follower():
-    string = " follower 🧑"
-    if request.method == 'POST':
-        data = json.loads(request.data.decode('UTF-8'))
-        if data['type'] == "user-follow" and data['value'] == "follow":
-            UserAction.query.filter_by(user_id=current_user.id,affected=int(data['user']), type="userfollow").delete()
-            db.session.commit()
-            
-            follower = UserAction.query.filter_by(affected=int(data['user'])).count()
-            return "<strong>" + str(follower) + string + "</strong>"
-        elif data['type'] == "user-follow" and data['value'] == "followed":
-            follower = UserAction(user_id=current_user.id, affected=int(data['user']), type="userfollow")
-            db.session.add(follower)
-            db.session.commit()
-           
-            follower = UserAction.query.filter_by(affected=int(data['user'])).count()
-            return "<strong>" + str(follower) + string + "</strong>"
-        elif data['type'] == "get-follow":
-            f = []
-            for user in current_user.do:
-                f.append(user)
-            return jsonify(f)
-    return "no input"
 
 
 

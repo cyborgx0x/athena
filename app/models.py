@@ -138,15 +138,3 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return User.query.get(int(id))
 
-@dataclass
-class UserAction(db.Model):
-    '''
-    the action with user
-    it can be: follow, change permission, transfer ownership, money transaction,...
-    '''
-
-    user_id:int = Column(Integer, ForeignKey('user.id'),primary_key=True)
-    affected:int = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    type:str = Column(String(50))
-    time = Column(DateTime, default = datetime.utcnow)
-    content = Column(Text)
