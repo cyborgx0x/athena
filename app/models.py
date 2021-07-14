@@ -68,7 +68,7 @@ class Collection(db.Model):
         api = "b4efdd223b0240f2b1212a0cef3bda37"
         link = "https://api.imgbb.com/1/upload?expiration=600&key="
         response = requests.post(link+api, data=data)
-        self.cover_data = response.json()
+        self.cover_data = response.json()    
         print(self.cover_data)
 
 
