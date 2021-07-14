@@ -25,11 +25,8 @@ def index():
 def batch():
     collections = Collection.query.filter_by(status="public").all()
     for col in collections:
-        col.type = "book"
-        if col.tag:
-            col.tag += ", 100 Cuốn Sách Kinh Điển"
-        else: 
-            col.tag = "100 Cuốn Sách Kinh Điển"
+        if col.cover != None and col.cover_data == None:
+            col.render_cover()
         db.session.commit()
     return "success"
 
