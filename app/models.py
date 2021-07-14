@@ -60,7 +60,7 @@ class Collection(db.Model):
     def render_cover(self):
         img = self.cover
         crop_image = return_img(img)
-        file_data = base64.b64encode(crop_image).decode()
+        file_data = base64.b64encode(crop_image.getvalue()).decode()
         print(file_data)
         data = {
             "image":file_data
