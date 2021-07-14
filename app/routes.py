@@ -95,6 +95,9 @@ def all_collections():
 def public_collection(id):
     collection = Collection.query.filter_by(id=id).first()
     medias = Media.query.filter_by(collection_id=id).order_by(Media.id)
+    tags = collection.tag_render()
+    for tag in tags:
+        pass
     return  render_template("public_collection.html", collection = collection, medias = medias)
 
 @app.route("/author/<author_name>")
