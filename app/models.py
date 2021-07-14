@@ -137,27 +137,6 @@ class User(UserMixin, db.Model):
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
-@dataclass
-class MediaAction(db.Model):
-    '''
-    The action with media is include here, It can be: like, bookmark, comment. 
-    '''
-    user_id:int = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    media_id:int = Column(Integer, ForeignKey('media.id'), primary_key=True)
-    time = Column(DateTime, default = datetime.utcnow)
-    type = Column(String(50))
-    content = Column(Text)
-@dataclass
-class CollectionAction(db.Model):
-    '''
-    the action with collection
-    fork, clip, like, repost, share to profile, contribute....
-    '''
-    user_id:int = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    collection_id:int = Column(Integer, ForeignKey('collection.id'), primary_key=True)
-    time = Column(DateTime, default = datetime.utcnow)
-    type = Column(String(50))
-    content = Column(Text)
 
 @dataclass
 class UserAction(db.Model):

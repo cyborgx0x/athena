@@ -144,24 +144,6 @@
             Tùy chọn 
           </a>
           <div class="dropdown-menu dropdown-menu-demo dropdown-menu-arrow bg-dark text-white">
-                <label class="form-selectgroup-item" >
-                  <input class="form-selectgroup-input" name={{chapter.id}} type="checkbox" {{ "checked" if chapter.bookmark else  "" }} onchange="
-                  if (this.checked == true ) {
-                    document.getElementById('bookmarkButton').textContent='Xóa đánh dấu ❌';
-                    let data = {chapter:this.name, value:'add'};
-                    axios.post('/api/bookmark/', data).then((res)=>{console.log(res)})
-
-                  }  
-                  else {
-                    document.getElementById('bookmarkButton').textContent='Đánh dấu chương 📑';
-                    let data= {chapter:this.name, value:'remove'}
-                    axios.post('/api/bookmark/', data).then((res)=>{console.log(res)})
-
-                    }
-                  ">
-                  
-                  <span class="form-selectgroup-label" id="bookmarkButton">{{ "Xóa đánh dấu ❌" if chapter.bookmark else "Đánh dấu chương 📑"}}</span>
-                </label>
               <a href="#" data-toggle="modal" data-target="#Editable" class="dropdown-item">
                 Search Function
               </a>

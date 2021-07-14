@@ -12,7 +12,7 @@ import requests
 from app import app, db
 from app.form import (LoginForm,
                       RegistrationForm)
-from app.models import (Collection, Media, User, UserAction, CollectionAction, MediaAction)
+from app.models import (Collection, Media, User, UserAction)
 from datetime import datetime
 
 @app.route("/")
@@ -59,11 +59,6 @@ def img_proxy(link):
     return  send_file(img, mimetype='image/jpeg')
 
 
-@app.route("/creator/<id>", methods=['GET', 'POST'])
-def view_creator(id):
-    user = User.query.filter_by(id=id).first()
-    collections = Collection.query.filter_by(creator_id=user.id, status="public")
-    return render_template("public_user.html", user = user, collections =collections)
 
 @login_required
 @app.route("/edit/user/<int:id>", methods=['GET', 'POST'])
@@ -90,27 +85,11 @@ def edit_user(id):
     else:
         return redirect(url_for("index"))
 
-@app.route("/creators/")
-def all_creators():
-    users = User.query.all()
-    top_users = User.query.limit(12).all()
-    return render_template("all_users.html", users = users, top_users=top_users, title="Người sáng tạo")
-
-@app.route("/following/")
-def following_user():
-    following = User.query.join(User.affected).filter_by(user_id=current_user.id)
-    return render_template("all_users.html", users = following, title="Following")
 
 @app.route("/all_collections")
 def all_collections():
     all_collections = Collection.query.filter_by(status="public")
     return  render_template("all_collections.html", all_collections = all_collections, title =  "Tất cả tác phẩm")
-
-@app.route("/liked/")
-def liked_collection():
-    collections = CollectionAction.query.filter_by(user_id=current_user.id, type="userlove")
-    return  render_template("all_collections.html", collections = collections)
-
 
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
@@ -253,21 +232,6 @@ API SESSION
 Contain interaction with the request from client
 '''
 
-@app.route ("/api/bookmark/", methods=['POST'])
-def bookmark_api():
-    if request.method == 'POST':
-        incoming_data= json.loads(request.data.decode('UTF-8'))
-        if incoming_data['value'] == "remove":
-            item = MediaAction.query.filter_by(media_id=incoming_data['chapter'], user_id=current_user.id, type="mediabookmark").delete()
-            db.session.commit()
-            return "remove bookmark successfully"
-        else:
-            newitem = MediaAction(user_id=current_user.id, media_id=incoming_data['chapter'], type="mediabookmark")
-            db.session.add(newitem)
-            db.session.commit()
-            return "added bookmark successfully"
-    return "message received"
-
 
 @app.route("/editor/<int:collection_id>/new-chapter/", methods=['GET', 'POST'])
 def new_chapter(collection_id):
@@ -298,27 +262,6 @@ def new_collection():
     return redirect(url_for('edit_collection', id=new_collection.id))
 
 
-@app.route("/user/love/",methods=['GET', 'POST'])
-def update_love():
-    love =  current_user.collectionaction
-    data = [col for col in love]
-    print(data)
-    if request.method == 'POST':
-        data= json.loads(request.data.decode('UTF-8'))
-        print(data)
-        if data['type'] == "love" and data['value'] == "love":
-            love = CollectionAction(user_id = current_user.id, collection_id = data['id'], type="collection_love")
-            db.session.add(love)
-            db.session.commit()
-            total_love = CollectionAction.query.filter_by(collection_id=data['id'], type="collection_love").count()
-            return "has " + str(total_love) + " ❤"
-        else:
-            itemdelete = CollectionAction.query.filter_by(user_id=current_user.id,collection_id=data['id'],type="collection_love").delete()
-            db.session.commit()
-            total_love = CollectionAction.query.filter_by(collection_id=data['id'], type="collection_love").count()
-            return "has " + str(total_love) + " ❤"
-    return jsonify(data)
-
 
 @app.route("/api/following/",methods=['GET', 'POST'])
 def update_follower():
@@ -345,31 +288,6 @@ def update_follower():
             return jsonify(f)
     return "no input"
 
-
-
-'''
-DANGER SESSION
-contain link and API for delete item
-must control it with carefully behaviour
-'''
-
-@app.route("/collection/<int:id>/delete", methods=['GET', 'POST'])
-def delete_collection(id):
-    MediaAction.query.join(Media.collection).filter_by(id=id).delete()
-    CollectionAction.query.filter_by(collection_id=id).delete()
-    Media.query.filter_by(collection=id).delete()
-    Collection.query.filter_by(id=id).delete()
-    db.session.commit()
-    return  redirect(url_for("dashboard"))
-
-@app.route("/media/<int:id>/delete", methods=['GET', 'POST'])
-def delete_chapter(id):
-    media = Media.query.filter_by(id=id).first()
-    next = url_for('edit_collection', id=media.collection_id)
-    MediaAction.query.filter_by(media_id=id).delete()
-    media = Media.query.filter_by(id=id).delete()
-    db.session.commit()
-    return  redirect(next)
 
 
 '''
