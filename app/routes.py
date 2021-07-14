@@ -54,8 +54,6 @@ chứa những chức năng mở rộng
 
 @app.route("/img-cover/<path:link>")
 def img_proxy(link):
-    url="http://skybooks.vn/wp-content/uploads/2021/03/chung-ta-khong-the-la-ban-tang-kem-bookmark-so-tay-1.jpg"
-    print(link)
     img = return_img(link)
     img.seek(0)
     return  send_file(img, mimetype='image/jpeg')
@@ -173,6 +171,7 @@ def edit_collection(id):
         elif incoming_data["type"] == "book-cover":
             collection.cover = incoming_data["value"]
             db.session.commit()
+            collection.render_cover()
             return "Đã cập nhật ảnh bìa"
         elif incoming_data["type"] == "short-desc":
             collection.short_desc = incoming_data["value"]

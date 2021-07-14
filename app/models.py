@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from re import T
 from flask_login import UserMixin
 from sqlalchemy import MetaData, Text, Unicode, UnicodeText, JSON, Column, Integer, String, DateTime, ForeignKey
 from flask_sqlalchemy import Model
@@ -8,7 +9,8 @@ from app import db, login
 import json
 import requests
 meta = MetaData()
-
+from tools import *
+import base64
 
 @dataclass
 class Collection(db.Model):
@@ -27,6 +29,7 @@ class Collection(db.Model):
     status = Column(Unicode(300), default ="draft")
     short_desc:str = Column(String(160))
     desc = Column(JSON)
+    cover_data = Column(JSON)
     cover:str = Column(Text)
     publish_year = Column(Integer)
     type = Column(String(50))
@@ -54,6 +57,21 @@ class Collection(db.Model):
         name = incoming_data["type"]
         print(self.desc['blocks'])
         return "success"
+    def render_cover(self):
+        img = self.cover
+        crop_image = return_img(img)
+        file_data = base64.b64encode(crop_image).decode()
+        print(file_data)
+        data = {
+            "image":file_data
+        }
+        api = "b4efdd223b0240f2b1212a0cef3bda37"
+        link = "https://api.imgbb.com/1/upload?expiration=600&key="
+        response = requests.post(link+api, data=data)
+        self.cover_data = response.json()
+        print(self.cover_data)
+
+
 
 
 
