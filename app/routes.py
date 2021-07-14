@@ -26,7 +26,10 @@ def batch():
     collections = Collection.query.filter_by(status="public").all()
     for col in collections:
         if col.cover != None and col.cover_data == None:
-            col.render_cover()
+            try: 
+                col.render_cover()
+            except:
+                print(col.id)
         db.session.commit()
     return "success"
 
