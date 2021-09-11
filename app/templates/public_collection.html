@@ -24,73 +24,60 @@
                 <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
             </div>
         </div>
-            <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="alert-heading"><strong>{{collection.name}}</strong> </h2>
-                    <p>Tác giả: 
-                        <a href="/author/{{ collection.author }}" class="btn btn-primary">
-                            {{ collection.author }}
-                        </a>
-                    </p>
-                    <p><strong>Thể loại: </strong>{{ collection.type }}</p>
-                    <p><strong>Thẻ đánh dấu: </strong>
-                        {% if collection.tag == None %}
-                        No Tag
-                        {% else %}
-                        {% with %}
-                        {% set tags = collection.tag_render() %}
-                        {% for tag in tags %}
-                        <span class="badge bg-blue"><a href="/tag/{{ tag }}" class="text-white">{{ tag }}</a></span>
-                        {% endfor %}
-                        {% endwith %}
-                        {% endif %}
-                    </p>
-                    {% if collection.publish_year %}
-                    <p><strong>Xuất bản: <a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong></p>
-                    {% else %}
-                    {% endif %}
-                    
-                    
-                    <div>
-                        <a class="btn btn-success btn-pill" href="{{ collection.download }}" target="_blank">
-                            <!-- Download SVG icon from http://tabler-icons.io/i/cloud-download -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><line x1="12" y1="13" x2="12" y2="22" /><polyline points="9 19 12 22 15 19" /></svg>
-                            Tải về {{collection.name}} epub
-                        </a>
+        <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                    <h2><strong>{{collection.name}}</strong> </h2>
+                        
                     </div>
-                    <br>
-                    <div>
-                        <a class="btn btn-danger btn-pill" href="#" target="_blank">
-                            <!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="6" cy="19" r="2" /><circle cx="17" cy="19" r="2" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
-                            Mua sách {{collection.name}}
-                        </a>
+                    <div class="card-body">
+                        <div class="main-content" id="detailInfomation">
+                            {{ collection.desc | render }}
+    
+                        </div>
+                        
                     </div>
                 </div>
-            </div>
             <div class="fb-comments" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-numposts="10"></div>
-            <div style="margin-top: 30px; background: white">
-                <div class="card-header">
-                    <h2>
-                        <strong>Lời tựa</strong>
-                    </h2>
-                </div>
-                <div class="card-body">
-                    <div class="main-content" id="detailInfomation">
-                        {{ collection.desc | render }}
-
-                    </div>
-                    
-                </div>
+            
             </div>
-        </div>
         </div>
         
     </div>
 
     <div class="col-lg-4">
-        
+        <div class="card">
+            <div class="card-body">
+                <p>Tác giả: 
+                    <a href="/author/{{ collection.author }}" class="btn btn-primary">
+                        {{ collection.owner.name }}
+                    </a>
+                </p>
+                <p><strong>Thể loại: </strong>{{ collection.type }}</p>
+                <p>
+                    {{collection.short_desc}}
+                </p>
+                <p><strong>Thẻ đánh dấu: </strong>
+                    {% if collection.tag == None %}
+                    No Tag
+                    {% else %}
+                    {% with %}
+                    {% set tags = collection.tag_render() %}
+                    {% for tag in tags %}
+                    <span class="badge bg-blue"><a href="/tag/{{ tag }}" class="text-white">{{ tag }}</a></span>
+                    {% endfor %}
+                    {% endwith %}
+                    {% endif %}
+                </p>
+                {% if collection.publish_year %}
+                <p><strong>Xuất bản: <a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong></p>
+                {% else %}
+                {% endif %}
+                
+                
+                
+            </div>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h2>

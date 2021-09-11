@@ -259,12 +259,11 @@ def build_indexing():
 
 @app.route("/new_collection/", methods=['GET', 'POST'])
 def new_collection():
-    if current_user.type == 1:
-        new_collection = Collection(name="Tác phẩm mới", status="draft", creator_id=current_user.id)
-        db.session.add(new_collection)
-        db.session.commit()
-        db.session.refresh(new_collection)
-        return redirect(url_for('edit_collection', id=new_collection.id))
+    new_collection = Collection(name="Tác phẩm mới", creator_id=current_user.id)
+    db.session.add(new_collection)
+    db.session.commit()
+    db.session.refresh(new_collection)
+    return redirect(url_for('edit_collection', id=new_collection.id))
 
 
 
