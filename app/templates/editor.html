@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="card">
+    <div id="editorjs"></div>
+</div>
+<script src="{{url_for('static', filename='editorjs@latest.js')}}"></script>
+<script src="{{url_for('static', filename='header@latest.js')}}"></script>
+<script src="{{url_for('static', filename='list@latest.js')}}"></script>
+<script>
+    const editor = new EditorJS()
+</script>
+{% endblock %}

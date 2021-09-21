@@ -21,6 +21,10 @@ def index():
     top_creators = User.query.limit(12).all()
     return  render_template("home.html", top_view_collections = top_view_collections, top_creators=top_creators)
 
+@app.route("/editor")
+def editor():
+    return render_template('editor.html')
+
 @app.route("/batch")
 def batch():
     collections = Collection.query.filter_by(status="public").all()
