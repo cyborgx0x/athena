@@ -69,9 +69,12 @@
                     {% endwith %}
                     {% endif %}
                 </p>
-                {% if collection.publish_year %}
-                <p><strong>Xuất bản: <a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong></p>
+                {% if collection.time %}
+                <p><strong>Cập nhật: <a href="/year/{{ collection.publish_year}}">{{ collection.time}}</a></strong></p>
                 {% else %}
+                <p>
+                    Không rõ thời gian
+                </p>
                 {% endif %}
                 
                 

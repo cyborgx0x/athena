@@ -34,6 +34,8 @@ class Collection(db.Model):
     publish_year = Column(Integer)
     type = Column(String(50))
     download = Column(Unicode(500))
+    time = Column(DateTime, default=datetime.now())
+
     '''
     statistic zone
     '''

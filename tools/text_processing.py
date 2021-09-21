@@ -28,6 +28,7 @@ class Process:
         take a json format from editorjs and return a text strings
         '''
         render = []
+       
         for item in stream["blocks"]:
             if item["type"] == "paragraph":
                 render.append("<p>" + item["data"]["text"] + "</p>")
