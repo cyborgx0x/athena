@@ -25,6 +25,11 @@ def index():
 def editor():
     return render_template('editor.html')
 
+@app.route("/image")
+def image_processing():
+    return render_template('image.html')
+
+
 @app.route("/batch")
 def batch():
     collections = Collection.query.filter_by(status="public").all()
@@ -355,6 +360,6 @@ def register():
 @login_required
 def dashboard():
     user = User.query.filter_by(id=current_user.id).first_or_404()
-    all_collections = Collection.query.order_by(Collection.id.asc()).all()
+    all_collections = Collection.query.order_by(Collection.id.desc()).all()
     return render_template('dash.html', user=user, all_collections=all_collections)
 
