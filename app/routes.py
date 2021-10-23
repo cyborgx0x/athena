@@ -275,6 +275,9 @@ def new_collection():
     return redirect(url_for('edit_collection', id=new_collection.id))
 
 
+@app.route("/delete", methods=['GET', 'POST'])
+def delete_item():
+    return
 
 
 '''

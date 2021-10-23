@@ -32,15 +32,14 @@ class Collection(db.Model):
     cover_data = Column(JSON)
     cover:str = Column(Text)
     publish_year = Column(Integer)
-    type = Column(String(50))
     download = Column(Unicode(500))
     time = Column(DateTime, default=datetime.now())
-
     '''
     statistic zone
     '''
     view = Column(Integer)
     creator_id = Column(Integer, ForeignKey('user.id'))
+    type_id = Column(Integer, ForeignKey('type.id'))
     media = db.relationship('Media', backref ='collection')
     def create(self, *args, **kwargs):
         pass
@@ -69,8 +68,6 @@ class Collection(db.Model):
 
 
 
-
-
 @dataclass
 class Media(db.Model):
     '''
@@ -96,6 +93,15 @@ class Media(db.Model):
     '''
     collection_id = Column(Integer, ForeignKey('collection.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
+
+
+@dataclass
+class Type(db.Model):
+    id:int = Column(Integer, primary_key=True, autoincrement=True)
+    name:str = Column(String(160))
+    short_desc = Column(String(160))
+    slug = Column(String(160))
+    collection = db.relationship('Collection', backref ='type')
 
 
 @dataclass

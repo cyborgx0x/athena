@@ -50,13 +50,14 @@
             <div class="card-body">
                 <p>Tác giả: 
                     <a href="/author/{{ collection.author }}" class="btn btn-primary">
-                        {{ collection.owner.name }}
+                        {{ collection.author}}
                     </a>
                 </p>
-                <p><strong>Thể loại: </strong>{{ collection.type }}</p>
-                <p>
+                <p><strong>Thể loại: </strong>{{ collection.type.name }}</p>
+                <h3>Đánh giá của Biên Tập Viên:</h3>
+                <blockquote>
                     {{collection.short_desc}}
-                </p>
+                </blockquote>
                 <p><strong>Thẻ đánh dấu: </strong>
                     {% if collection.tag == None %}
                     No Tag
@@ -69,8 +70,9 @@
                     {% endwith %}
                     {% endif %}
                 </p>
-                {% if collection.time %}
-                <p><strong>Cập nhật: <a href="/year/{{ collection.publish_year}}">{{ collection.time}}</a></strong></p>
+                {% if collection.publish_year %}
+                <h4>Năm xuất bản:</h4>
+                <strong><a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong>
                 {% else %}
                 <p>
                     Không rõ thời gian
@@ -79,25 +81,11 @@
                 {% if collection.download %}
                 <a class="btn btn-success" href="{{ collection.download }}">Chi tiết</a>
                 {% endif %}
-                
+
                 
                 
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <h2>
-                    <strong>
-                        Xem trước nội dung 
-                    </strong>
-                </h2>
-            </div>
-            <div class="card-body" style="overflow: hidden;">
-                {% for media in medias %}
-                {% include '_media_list.html'  %}   
-                {% endfor %}
-            </div>
-        </div>    
+        </div> 
     </div>
 </div>
 
