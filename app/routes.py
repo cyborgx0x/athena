@@ -17,7 +17,7 @@ from datetime import datetime
 
 @app.route("/")
 def index():
-    top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.id.asc()).limit(20).all()
+    top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.id.desc()).limit(20).all()
     top_creators = User.query.limit(12).all()
     return  render_template("home.html", top_view_collections = top_view_collections, top_creators=top_creators)
 
