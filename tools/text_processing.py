@@ -38,5 +38,3 @@ class Process:
                 render.append(str(item["data"]))
         output = "\n".join(render)
         return Markup(output)
-
-  

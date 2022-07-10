@@ -3,7 +3,7 @@ from PIL import Image, ImageOps
 import io
 import numpy as np
 
-    
+
 def getimage(link):
     image = requests.get(link)
     return io.BytesIO(image.content)

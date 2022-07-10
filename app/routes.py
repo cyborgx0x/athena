@@ -26,23 +26,6 @@ def index():
 def editor():
     return render_template('editor.html')
 
-@app.route("/image")
-def image_processing():
-    return render_template('image.html')
-
-
-@app.route("/batch")
-def batch():
-    collections = Collection.query.filter_by(status="public").all()
-    for col in collections:
-        if col.cover != None and col.cover_data == None:
-            try: 
-                col.render_cover()
-            except:
-                print(col.id)
-        db.session.commit()
-    return "success"
-
 @app.route('/privacy-policy')
 def pp():
     return render_template('pp.html')
@@ -50,8 +33,6 @@ def pp():
 @app.route('/TOS')
 def tos():
     return render_template('TOS.html')
-
-
 
 @app.route("/test/search/", methods=['GET', 'POST'])
 def test_search():
