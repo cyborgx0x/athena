@@ -1,14 +1,18 @@
-<div class="card" style="margin:5px">
+<div class="card">
   <div class="crop"  type="button" onclick="location.href='/collection/{{collection.id}}/'">
-    <img src="{% if collection.cover_data %}
-    {{collection.cover_data.data.url}}
-    {% else %}https://firebasestorage.googleapis.com/v0/b/ngot-technology.appspot.com/o/book-cover%2Fsample.jpg?alt=media&token=4c780b66-0c22-41eb-9fde-51973b421815{% endif %}" alt="{{collection.name}}" style="width:100%; height:auto">
-    <div class="blend-over">
-      <h2><a href="{{url_for('public_collection', id=collection.id)}}">{{collection.name}}</a></h2>
-      <p>{{collection.author}}</p>
-      <span class="badge bg-red">{{ collection.type.name }}</span>
+    <div class="card-body">
+      <h3 class="card-title"> 
+        <a href="{{url_for('public_collection', id=collection.id)}}" style="text-decoration: none !important;">
+          {{ collection.name }}
+        </a>
+      </h3>
+      <img src="{{ collection.cover }}" alt="{{collection.name}}" style="width:100%; height:auto">
+      <!-- <div class="blend-over">
+        <h2><a href="{{url_for('public_collection', id=collection.id)}}">{{collection.name}}</a></h2>
+        <p>{{collection.author}}</p>
+        <span class="badge bg-red">{{ collection.type.name }}</span>
+      </div> -->
     </div>
-   
   </div>
   </div>
 

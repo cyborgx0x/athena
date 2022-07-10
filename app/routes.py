@@ -4,6 +4,7 @@ import re
 from flask import (Flask, Markup, flash, jsonify, redirect, render_template,
                    request, send_file, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
+from sqlalchemy import func
 from tools import *
 from werkzeug.datastructures import ImmutableMultiDict
 from werkzeug.urls import url_parse
@@ -131,7 +132,6 @@ def edit_collection(id):
     if request.method == 'POST':
        
         incoming_data= json.loads(request.data.decode('UTF-8'))
-        print(json.dumps(incoming_data))
         if incoming_data["type"] == "content":
             return jsonify(collection.desc)
         elif incoming_data["type"] == "upload":
@@ -247,12 +247,12 @@ Contain interaction with the request from client
 
 @app.route("/editor/<int:collection_id>/new-chapter/", methods=['GET', 'POST'])
 def new_chapter(collection_id):
-    if current_user.type == 1:
-        new_chapter = Media(name="New Media", collection_id=collection_id, user_id=current_user.id, type="chapter")
-        db.session.add(new_chapter)
-        db.session.commit()
-        db.session.refresh(new_chapter)
-        return redirect(url_for('edit_media', id=new_chapter.id))
+    # if current_user.type == 1:
+    new_chapter = Media(name="New Media", collection_id=collection_id, user_id=current_user.id, type="chapter")
+    db.session.add(new_chapter)
+    db.session.commit()
+    db.session.refresh(new_chapter)
+    return redirect(url_for('edit_media', id=new_chapter.id))
 
 
 @app.route("/build_indexing/", methods=['GET', 'POST'])

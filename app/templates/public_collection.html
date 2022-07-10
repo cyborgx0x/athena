@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content%}
-
+<blockquote>
+    {{collection.short_desc}}
+</blockquote>
 <div class="row">
     <div class="col-lg-8 ">
         <div class="row">
@@ -43,10 +45,8 @@
                     </a>
                 </p>
                 <p><strong>Thể loại: </strong>{{ collection.type.name }}</p>
-                <h3>Đánh giá của Biên Tập Viên:</h3>
-                <blockquote>
-                    {{collection.short_desc}}
-                </blockquote>
+                
+                
                 <p><strong>Thẻ đánh dấu: </strong>
                     {% if collection.tag == None %}
                     No Tag
@@ -68,7 +68,9 @@
                 </p>
                 {% endif %}
                 {% if collection.download %}
-                <a class="btn btn-success" href="{{ collection.download }}">Chi tiết</a>
+                <div>
+                    <a href="{{ collection.download }}">Tải về</a>
+                </div>
                 {% endif %}
                 <div>
                     <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>

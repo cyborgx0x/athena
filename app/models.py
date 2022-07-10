@@ -19,9 +19,6 @@ class Collection(db.Model):
     This table contain many element, and bundle it into a collection, which can be show as a book, project, fiction, screenplay
     Data of this table can be access directly throught search filter, have it own style that affect the whole. 
     '''
-    '''
-    basic meta
-    '''
     id:int = Column(Integer, primary_key=True, autoincrement=True)
     name:str = Column(Unicode(300))
     author:str = Column(Unicode(300))
@@ -34,9 +31,6 @@ class Collection(db.Model):
     publish_year = Column(Integer)
     download = Column(Unicode(500))
     time = Column(DateTime, default=datetime.now())
-    '''
-    statistic zone
-    '''
     view = Column(Integer)
     creator_id = Column(Integer, ForeignKey('user.id'))
     type_id = Column(Integer, ForeignKey('type.id'))
@@ -44,8 +38,11 @@ class Collection(db.Model):
     def create(self, *args, **kwargs):
         pass
     def tag_render(self):
-        passing_array = self.tag.split(", ")
-        return passing_array
+        try: 
+            passing_array = self.tag.split(", ")
+            return passing_array
+        except:
+            return "No tag"
     def save(self, passing):
         '''
         take an passing data and set the instance data to the passing data, return message to the user
@@ -93,7 +90,6 @@ class Media(db.Model):
     '''
     collection_id = Column(Integer, ForeignKey('collection.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
-
 
 @dataclass
 class Type(db.Model):
