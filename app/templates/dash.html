@@ -3,7 +3,7 @@
 {% block layoutleft %}
 
 <div  style="margin:5px">
-    <div class="bg-dark text-white">
+    <div>
         <button class="dropdown-item" onclick="showMedia(this)" value='your-collection'>Quản lý tác phẩm</button>
         <button class="dropdown-item" onclick="showMedia(this)" value='user-profile'>Chỉnh sửa hồ sơ</button>
 
@@ -40,7 +40,7 @@
 
 {% block layoutright %}
 <div class="card">
-    <div class="card-body p-4 text-center bg-dark text-white">
+    <div class="card-body p-4 text-center">
         <span class="avatar avatar-xl mb-3 avatar-rounded" height="1.2rem">
             <img src="{{user.avatar}}" alt="" style="width:100%;height:auto" class="avatar avatar-xl mb-3 avatar-rounded" id="avatar">
         </span>

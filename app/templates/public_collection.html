@@ -9,44 +9,33 @@
 <div class="row">
     <div class="col-lg-8 ">
         <div class="row">
-        <div class="col-md-4">
-            <div  style="margin:5px">
-                {% if current_user.id == collection.creator_id %}
-                <a href="{{url_for("edit_collection", id=collection.id)}}" class="btn">Quản lý tác phẩm</a>
-                {% else %}
-                {% endif %}
-            </div>
-            {% include "_collection.html"  %}
-            <div>
-                <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
-            </div>
-            <div>
-                <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
-            </div>
-        </div>
-        <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                    <h2><strong>{{collection.name}}</strong> </h2>
-                        
-                    </div>
-                    <div class="card-body">
-                        <div class="main-content" id="detailInfomation">
-                            {{ collection.desc | render }}
+            <div class="card">
+                <div class="card-body">
+                    <div class="main-content" id="detailInfomation">
+                        {{ collection.desc | render }}
     
-                        </div>
-                        
                     </div>
+                    
                 </div>
-            <div class="fb-comments" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-numposts="10"></div>
-            
+
             </div>
+
         </div>
         
     </div>
 
     <div class="col-lg-4">
         <div class="card">
+
+            <div>
+                <img src="{{ collection.cover }}" alt="">
+            </div>
+            <div>
+                {% if current_user.id == collection.creator_id %}
+                <a href="{{url_for("edit_collection", id=collection.id)}}" class="btn">Quản lý tác phẩm</a>
+                {% else %}
+                {% endif %}
+            </div>
             <div class="card-body">
                 <p>Tác giả: 
                     <a href="/author/{{ collection.author }}" class="btn btn-primary">
@@ -81,7 +70,12 @@
                 {% if collection.download %}
                 <a class="btn btn-success" href="{{ collection.download }}">Chi tiết</a>
                 {% endif %}
-
+                <div>
+                    <div class="fb-like" data-href="https://dreamer.asia/collection/{{ collection.id }}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
+                </div>
+                <div>
+                    <div class="fb-save" data-uri="https://dreamer.asia/collection/{{ collection.id }}" data-size="large"></div>
+                </div>
                 
                 
             </div>
