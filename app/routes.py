@@ -335,13 +335,14 @@ def auth():
     print("redirect:" + redirect_link)
     link_referal = request.referrer
     print("link referal:" + str(link_referal))
-    ex_token = "https://graph.facebook.com/v14.0/oauth/access_token?client_id=716233336363436&redirect_uri=https://athena-publication.herokuapp.com/login_with_facebook&client_secret=530a79a255d5f568bc62ad10be922f17&code="+code
+    ex_token = "https://graph.facebook.com/v14.0/oauth/access_token?client_id=716233336363436&redirect_uri=https://athena-publication.herokuapp.com/login&client_secret=530a79a255d5f568bc62ad10be922f17&code="+code
     acc = requests.get(ex_token)
     print(acc)
     if acc.status_code == 200:
         r = json.loads(acc.text)
         access_token = acc["access_token"]
         graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
+        long_token = "https://graph.facebook.com/v14.0/oauth/access_token?grant_type=fb_exchange_token&client_id=716233336363436&client_secret=530a79a255d5f568bc62ad10be922f17&fb_exchange_token=" + access_token
         auth = requests.get(graph_link)
         print(auth)
         if auth.status_code == 200:
