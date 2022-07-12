@@ -36,5 +36,7 @@ class Process:
                 render.append("<h2>" + item["data"]["text"] + "</h2>")
             elif item["type"] == "list":
                 render.append(str(item["data"]))
+            elif item["type"] == "image":
+                render.append("<img class='render-image' src='{0}'>".format(item["data"]["file"]["url"]))
         output = "\n".join(render)
         return Markup(output)

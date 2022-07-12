@@ -1,6 +1,6 @@
-import json
+import json, os
 import re
-
+import io
 from flask import (Flask, Markup, flash, jsonify, redirect, render_template,
                    request, send_file, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
@@ -15,6 +15,7 @@ from app.form import (LoginForm,
                       RegistrationForm)
 from app.models import (Collection, Media, User)
 from datetime import datetime
+from werkzeug.utils import secure_filename
 
 @app.route("/")
 def index():
@@ -49,7 +50,36 @@ def img_proxy(link):
     img.seek(0)
     return  send_file(img, mimetype='image/jpeg')
 
+@app.route("/upload_link",methods = ['GET', 'POST'])
+def upload_image_by_link():
+    if request.method == "POST":
+        link = json.loads(request.data.decode("UTF-8"))["url"]
+        file  = getimage(link)
+        print(file)
+        res = upload(file)
+        print(type(res), res)
+        r = {
+            "success" : 1,
+            "file": {
+                "url" : res["data"]["image"]["url"],
+            }
+        }
+        return r
 
+@app.route("/upload_image",methods = ['GET', 'POST'])
+def upload_image():
+    if request.method == "POST":
+        file  = request.files["image"]
+        data  = file
+        res = upload(data)
+        print(res)
+        r = {
+            "success" : 1,
+            "file": {
+                "url" : res["data"]["image"]["url"],
+            }
+        }
+        return r
 
 @login_required
 @app.route("/edit/user/<int:id>", methods=['GET', 'POST'])
@@ -120,7 +150,7 @@ def edit_collection(id):
                 collection.desc = incoming_data["value"]
                 print(collection.desc)
                 db.session.commit()
-                return "Đã cập nhật lời tựa"
+                return "Đã cập nhật nội dung"
             except:
                 return "incoming data invalid"
         elif incoming_data["type"] == "publish_year":

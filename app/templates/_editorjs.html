@@ -10,6 +10,7 @@
     <script src="{{url_for('static', filename='editorjs@latest.js')}}"></script>
     <script src="{{url_for('static', filename='header@latest.js')}}"></script>
     <script src="{{url_for('static', filename='list@latest.js')}}"></script>
+    <script src="{{url_for('static', filename='image@2.3.0.js')}}"></script>
     <script>
         axios.post('', {type:"content"})
         .then((response) => {
@@ -20,8 +21,17 @@
                     list: {
                     class: List,
                     inlineToolbar: true,
-                  },
-                  header:Header}});
+                    },
+                    image: {
+                        class: ImageTool,
+                        config: {
+                            endpoints: {
+                            byFile: '/upload_image', // Your backend file uploader endpoint
+                            byUrl: '/upload_link', // Your endpoint that provides uploading by Url
+                            }
+                        }
+                    },
+                    header:Header}});
                 let saveButton = document.getElementById('saveButton');
                 saveButton.addEventListener('click', function(e)  {editor.save().then((output)=>{
                     let upload = {
