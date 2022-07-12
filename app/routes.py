@@ -335,7 +335,7 @@ def login():
             email = r['email']
             avatar = r['picture']['data']['url']
             user = User.query.filter_by(facebook=id).first()
-            if user is None or user2 is None:
+            if user is None:
                 new_user = User(facebook=id, name=name, email=email)
                 db.session.add(new_user)
                 db.session.commit()
