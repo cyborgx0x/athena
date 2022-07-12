@@ -340,29 +340,29 @@ def auth():
     if acc.status_code == 200:
         r = json.loads(acc.text)
         access_token = acc["access_token"]
-    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
-    auth = requests.get(graph_link)
-    print(auth)
-    if auth.status_code == 200:
-        r = json.loads(auth.text)
-        id = r['id']
-        name = r['name']
-        email = r['email']
-        avatar = r['picture']['data']['url']
-        user = User.query.filter_by(facebook=id).first()
-        if user is None:
-            new_user = User(facebook=id, name=name, email=email)
-            db.session.add(new_user)
+        graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
+        auth = requests.get(graph_link)
+        print(auth)
+        if auth.status_code == 200:
+            r = json.loads(auth.text)
+            id = r['id']
+            name = r['name']
+            email = r['email']
+            avatar = r['picture']['data']['url']
+            user = User.query.filter_by(facebook=id).first()
+            if user is None:
+                new_user = User(facebook=id, name=name, email=email)
+                db.session.add(new_user)
+                db.session.commit()
+                db.session.refresh(new_user)
+                login_user(new_user)
+                return redirect(link_referal)
+            user.email = email
+            user.avatar = avatar
+            user.last_seen = datetime.hour
             db.session.commit()
-            db.session.refresh(new_user)
-            login_user(new_user)
+            login_user(user)
             return redirect(link_referal)
-        user.email = email
-        user.avatar = avatar
-        user.last_seen = datetime.hour
-        db.session.commit()
-        login_user(user)
-        return redirect(link_referal)
     return access_token,redirect_link
 
 @app.route('/logout')
