@@ -351,6 +351,7 @@ def auth():
         print(long_token_gen)
         if auth.status_code == 200:
             r = json.loads(auth.text)
+            print(r)
             id = r['id']
             name = r['name']
             email = r['email']
