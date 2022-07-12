@@ -340,7 +340,7 @@ def auth():
     print(acc.text)
     if acc.status_code == 200:
         r = json.loads(acc.text)
-        access_token = acc["access_token"]
+        access_token = r["access_token"]
         graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
         long_token = "https://graph.facebook.com/v14.0/oauth/access_token?grant_type=fb_exchange_token&client_id=716233336363436&client_secret=530a79a255d5f568bc62ad10be922f17&fb_exchange_token=" + access_token
         avatar_url = "https://graph.facebook.com/14.0/me/picture?fields=url&width=480&access_token=" + access_token
