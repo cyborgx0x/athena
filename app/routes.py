@@ -321,9 +321,9 @@ def login():
 
 @app.route("/login_with_facebook", methods=['GET','POST'])
 def login_with_facebook():
-    redirect_url = url_for("auth")
     client_id = "716233336363436"
     state = base64.encode(request.referrer)
+    redirect_url = url_for("auth", encoded_url = state)
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
