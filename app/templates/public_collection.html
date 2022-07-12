@@ -13,15 +13,32 @@
         <div class="row">
             <div class="card">
                 <div class="card-body">
-                    <div class="main-content" id="detailInfomation">
+                    <div class="main-content" id="detailInfomation" aria-expanded="false">
                         {{ collection.desc | render }}
     
                     </div>
-                    
+                    <a href="#detailInfomation" ></a>
                 </div>
-
             </div>
-
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Danh sách chương</h3>
+                    <table class="table table-vcenter"> 
+                        <tbody>
+                            {% for i in collection.media %}
+                            <tr>
+                                <td>
+                                    <a href="{{url_for('public_media', id=i.id)}}">{{i.name}}</a>
+                                </td>
+                                <td>
+                                    {{i.time}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         
     </div>
