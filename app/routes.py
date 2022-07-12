@@ -329,14 +329,18 @@ def login_with_facebook():
 
 @app.route('/auth')
 def auth():
-    token = request.args.get("code")
+    code = request.args.get("code")
     redirect_link = request.args.get("state", url_for("index"))
     redirect_link = urllib.parse.unquote(redirect_link)
-    print("token:" + token)
     print("redirect:" + redirect_link)
     link_referal = request.referrer
     print("link referal:" + str(link_referal))
-    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + token
+    ex_token = "https://graph.facebook.com/v14.0/oauth/access_token?client_id=716233336363436&redirect_uri=https://athena-publication.herokuapp.com/login_with_facebook&client_secret=530a79a255d5f568bc62ad10be922f17&code="+code
+    acc = requests.get(ex_token)
+    if acc.status_code == 200:
+        r = json.loads(acc.text)
+        access_token = acc["access_token"]
+    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
     auth = requests.get(graph_link)
     print(auth)
     if auth.status_code == 200:
@@ -359,7 +363,7 @@ def auth():
         db.session.commit()
         login_user(user)
         return redirect(link_referal)
-    return token,redirect_link
+    return access_token,redirect_link
 
 @app.route('/logout')
 def logout():
