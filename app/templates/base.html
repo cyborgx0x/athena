@@ -105,7 +105,22 @@
 <body class="theme-light">
 
   <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v14.0&appId=716233336363436&autoLogAppEvents=1" nonce="42OY0fCu"></script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v14.0&appId=716233336363436&autoLogAppEvents=1" nonce="42OY0fCu">
+FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        console.log(response.authResponse.accessToken);
+        axios.post('/login', {
+          token: response.authResponse.accessToken
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+    });
+  </script>
   </script>
   
   <div class="page">
@@ -227,23 +242,7 @@
         {% block editor %}{% endblock %}
       </div>
     </div>
-    <script>
-      FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        console.log(response.authResponse.accessToken);
-        axios.post('/login', {
-          token: response.authResponse.accessToken
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      }
-    });
-  
-    </script>
+
 </body>
 
 </html>
