@@ -321,12 +321,11 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
     if request.method == "POST":
-        incoming_data = json.loads(request.data.decode('UTF-8'))
-        incoming_data = incoming_data['data']
-        core_url = "https://graph.facebook.com/v10.0/me?fields=id,name,email,picture{url}&access_token="
-        access_token = incoming_data['authResponse']['accessToken']
-        avatar_url = "https://graph.facebook.com/v10.0/me/picture?fields=url&width=480&access_token="
-        auth = requests.get(core_url + access_token)
+        data = json.loads(request.data.decode('UTF-8'))
+        token= data['token']
+        core_url = "https://graph.facebook.com/14.0/me?fields=id,name,email,picture{url}&access_token="
+        avatar_url = "https://graph.facebook.com/14.0/me/picture?fields=url&width=480&access_token="
+        auth = requests.get(core_url + token)
         print(auth)
         if auth.status_code == 200:
             r = json.loads(auth.text)
@@ -340,14 +339,14 @@ def login():
                 db.session.add(new_user)
                 db.session.commit()
                 db.session.refresh(new_user)
-                login_user(new_user,duration=incoming_data['authResponse']['data_access_expiration_time'])
+                login_user(new_user)
                 return "added" 
             if user.email == None:
                 user.email = email
             user.avatar = avatar
             user.last_seen = datetime.now() 
             db.session.commit()
-            login_user(user,duration=incoming_data['authResponse']['data_access_expiration_time'])
+            login_user(user)
             return "signed"
     return render_template('login.html', title='Sign In', form = form)
     
