@@ -327,15 +327,12 @@ def login_with_facebook():
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
-@app.route('/auth?state=<encoded_url>')
-def auth(encoded_url):
-    print(encoded_url)
-    return_url = encoded_url
-    print(return_url)
+@app.route('/auth?code=<token>&state=<redirect_link>')
+def auth(token, redirect_link):
+    print(token)
+    print(redirect_link)
     link_referal = request.referrer
-    x = link_referal.split("#")[1].split("=")[2]
-    print(x)
-    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + x
+    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + token
     auth = requests.get(graph_link)
     print(auth)
     if auth.status_code == 200:
@@ -351,13 +348,13 @@ def auth(encoded_url):
             db.session.commit()
             db.session.refresh(new_user)
             login_user(new_user)
-            return redirect(return_url)
+            return redirect(link_referal)
         user.email = email
         user.avatar = avatar
         user.last_seen = datetime.hour
         db.session.commit()
         login_user(user)
-        return redirect(return_url)
+        return redirect(link_referal)
 
 
 @app.route('/logout')
