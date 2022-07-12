@@ -304,11 +304,8 @@ def authorized():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-    code = request.args.get("access_token")
-    print(code)
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    
+        return redirect(url_for('index'))  
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -320,36 +317,49 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-    if request.method == "POST":
-        data = json.loads(request.data.decode('UTF-8'))
-        token= data['token']
-        print(token)
-        access_token = "EAAKLaRGXGawBADfQAONSS0D757nit5JtAGJ0cmZBJ6ndzS8kSRt7IjNKf1ZAsct6ioZCW5duWOT13RIBs0R5bttL1THNrUTAx0ok0WdOpZBT700C7LvZAuLi3DuBlPiInuobnyLGuJmVGymY0VZA3WygL74dkHoxI9w0375UvZA00iRezoymNZCdg7XdslMlEfeFkV0MXegovhHy0IZALovFlksZBNukglZA9ZBuqqlxFoUULvgMVZC4jOPIQ"
-        graph_link =  "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=EAAKLaRGXGawBADGRLwIaOUlNyGUZBZAaYpvGGVQuWXYwkodwt3QxiynUc2IUPQ2PnX0a1cDx6iECDHzypOBmwdn7HNjvGODsOJdORnBkQgvDTmQHbj0GNzFKSyjOXN1Y74P1YLnoiBuWETEvj40krmZAUqnZBXFuZAljtafoz4TXTk0LxLv7ZAeprsuOP4N3boBXPQKfLjsYpTZBjyjnf7HsCzdFuzxktPTKg6tm0DlrZBAMLuzi7H8P"
-        auth = requests.get(graph_link)
-        print(auth)
-        if auth.status_code == 200:
-            r = json.loads(auth.text)
-            id = r['id']
-            name = r['name']
-            email = r['email']
-            avatar = r['picture']['data']['url']
-            user = User.query.filter_by(facebook=id).first()
-            if user is None:
-                new_user = User(facebook=id, name=name, email=email)
-                db.session.add(new_user)
-                db.session.commit()
-                db.session.refresh(new_user)
-                login_user(new_user)
-                return "added" 
-            user.email = email
-            user.avatar = avatar
-            user.last_seen = datetime.hour
-            db.session.commit()
-            login_user(user)
-            return "signed"
     return render_template('login.html', title='Sign In', form = form)
-    
+
+@app.route("/login_with_facebook", methods=['GET','POST'])
+def login_with_facebook():
+    redirect_url = url_for("auth")
+    client_id = "716233336363436"
+    state = base64.encode(request.referrer)
+    link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
+    return redirect(link)
+
+@app.route('/auth?state=<encoded_url>')
+def auth(encoded_url):
+    link_referal = request.referrer
+    print(encoded_url)
+    return_url = base64.decode(encoded_url)
+    print(url)
+    x = link_referal.split("#")[1].split("=")[2]
+    print(x)
+    graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + x
+    auth = requests.get(graph_link)
+    print(auth)
+    if auth.status_code == 200:
+        r = json.loads(auth.text)
+        id = r['id']
+        name = r['name']
+        email = r['email']
+        avatar = r['picture']['data']['url']
+        user = User.query.filter_by(facebook=id).first()
+        if user is None:
+            new_user = User(facebook=id, name=name, email=email)
+            db.session.add(new_user)
+            db.session.commit()
+            db.session.refresh(new_user)
+            login_user(new_user)
+            return redirect(return_url)
+        user.email = email
+        user.avatar = avatar
+        user.last_seen = datetime.hour
+        db.session.commit()
+        login_user(user)
+        return redirect(return_url)
+
+
 @app.route('/logout')
 def logout():
     logout_user()
