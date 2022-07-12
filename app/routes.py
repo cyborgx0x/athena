@@ -343,14 +343,14 @@ def auth():
         graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + access_token
         avatar_url = "https://graph.facebook.com/14.0/me/picture?fields=url&width=480&access_token=" + access_token
         auth = requests.get(graph_link)
-        ava = requests.get(avatar_url)
+        
         print(auth)
         if auth.status_code == 200:
             r = json.loads(auth.text)
             id = r['id']
             name = r['name']
             email = r['email']
-            print(ava)
+            
             user = User.query.filter_by(facebook=id).first()
             if user is None:
                 new_user = User(facebook=id, name=name, email=email)
@@ -360,7 +360,7 @@ def auth():
                 login_user(new_user)
                 return redirect(link_referal)
             user.email = email
-            user.avatar = avatar
+
             user.last_seen = datetime.hour
             db.session.commit()
             login_user(user)
