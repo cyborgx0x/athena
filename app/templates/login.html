@@ -1,64 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block layoutcenter %}
-<script>
-  function checkLoginState() {               // Called when a person is finished with the Login Button.
-    FB.getLoginStatus(function(response) {   // See the onlogin handler
-      statusChangeCallback(response);
-    });
-  }
-    function statusChangeCallback(response) {
-      console.log(response);
-      if (response.status === 'connected') {   // Logged into your webpage and Facebook.
-        axios.post('',{data:response}).then((res)=>{
-            if (res.data == "added") {
-              console.log(res.data)
-            }
-            else {
-              console.log("something missing")
-            }
-        }).catch((err)=>{
-            console.log(err.message)
-        })
-      } else {                                 // Not logged into your webpage or we are unable to tell.
-        console.log("hmmm")
-      }
-    }
-    window.fbAsyncInit = function() {
-
-      FB.init({
-        appId      : '2918322345050469',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v10.0'
-      });
-        
-      FB.AppEvents.logPageView();   
-
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-    });
-    };
-    
-    (function(d, s, id){
-       var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) {return;}
-       js = d.createElement(s); js.id = id;
-       js.src = "https://connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-     }(document, 'script', 'facebook-jssdk'));
-    
-
-     
-  </script>
-  
-  <div id="status"></div>
-  <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v10.0" nonce="6G9uuJ2a"></script>
 
 <div class="card" style="padding-left: 20px; padding-top:10px;padding-right:10px">
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
+    <div class="fb-login-button" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
     <form action="" method ="post" novalidate>
         {{ form.hidden_tag() }}
         {{ form.email.label }}
