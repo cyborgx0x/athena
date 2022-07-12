@@ -350,7 +350,7 @@ def auth():
             id = r['id']
             name = r['name']
             email = r['email']
-            avatar = json.loads(ava.text)["data"]["url"]
+            print(ava)
             user = User.query.filter_by(facebook=id).first()
             if user is None:
                 new_user = User(facebook=id, name=name, email=email)
