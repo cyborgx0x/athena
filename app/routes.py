@@ -363,7 +363,6 @@ def auth():
             db.session.commit()
             login_user(user)
             return redirect(link_referal)
-    return access_token,redirect_link
 
 @app.route('/logout')
 def logout():
