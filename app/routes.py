@@ -323,7 +323,7 @@ def login():
 def login_with_facebook():
     client_id = "716233336363436"
     state = request.referrer
-    redirect_url = url_for("auth", encoded_url = state)
+    redirect_url = "https://athena-publication.herokuapp.com/auth"
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
