@@ -13,7 +13,6 @@
   <script src="{{url_for('static', filename='jquery-3.2.1.slim.min.js')}}"></script>
   <script src="{{url_for('static', filename='popper.min.js')}}"></script>
   <script src="{{url_for('static', filename='axios.min.js')}}"></script>
-  <script src="{{url_for('static', filename='main.js')}}"></script>
   <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
   <script src="{{url_for('static', filename='lunr.js')}}"></script>
   <script src="{{url_for('static', filename='lunr.stemmer.support.js')}}"></script>
@@ -107,6 +106,23 @@
 
   <div id="fb-root"></div>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v14.0&appId=716233336363436&autoLogAppEvents=1" nonce="42OY0fCu"></script>
+  </script>
+  <script>
+    FB.getLoginStatus(function(response) {
+    if (response.status === 'connected') {
+      console.log(response.authResponse.accessToken);
+      axios.post('/login', {
+        token: response.authResponse.accessToken
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  });
+
   </script>
   <div class="page">
  
