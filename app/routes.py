@@ -15,7 +15,7 @@ from app.form import (LoginForm,
                       RegistrationForm)
 from app.models import (Collection, Media, User)
 from datetime import datetime
-from werkzeug.utils import secure_filename
+import urllib.parse
 
 @app.route("/")
 def index():
@@ -327,11 +327,15 @@ def login_with_facebook():
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
-@app.route('/auth?code=<token>&state=<redirect_link>')
-def auth(token, redirect_link):
-    print(token)
-    print(redirect_link)
+@app.route('/auth?<code>')
+def auth(code):
+    token = code.split("&")[0].split("=")[1]
+    redirect_link = code.split("&")[1].split("=")[1]
+    redirect_link = urllib.parse.unquote(redirect_link)
+    print("token:" + token)
+    print("redirect:" + redirect_link)
     link_referal = request.referrer
+    print("link referal:" + link_referal)
     graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + token
     auth = requests.get(graph_link)
     print(auth)
