@@ -323,9 +323,10 @@ def login():
     if request.method == "POST":
         data = json.loads(request.data.decode('UTF-8'))
         token= data['token']
-        core_url = "https://graph.facebook.com/14.0/me?fields=id,name,email,picture{url}&access_token="
-        avatar_url = "https://graph.facebook.com/14.0/me/picture?fields=url&width=480&access_token="
-        auth = requests.get(core_url + token)
+        print(token)
+        access_token = "EAAKLaRGXGawBADfQAONSS0D757nit5JtAGJ0cmZBJ6ndzS8kSRt7IjNKf1ZAsct6ioZCW5duWOT13RIBs0R5bttL1THNrUTAx0ok0WdOpZBT700C7LvZAuLi3DuBlPiInuobnyLGuJmVGymY0VZA3WygL74dkHoxI9w0375UvZA00iRezoymNZCdg7XdslMlEfeFkV0MXegovhHy0IZALovFlksZBNukglZA9ZBuqqlxFoUULvgMVZC4jOPIQ"
+        graph_link =  "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=EAAKLaRGXGawBADGRLwIaOUlNyGUZBZAaYpvGGVQuWXYwkodwt3QxiynUc2IUPQ2PnX0a1cDx6iECDHzypOBmwdn7HNjvGODsOJdORnBkQgvDTmQHbj0GNzFKSyjOXN1Y74P1YLnoiBuWETEvj40krmZAUqnZBXFuZAljtafoz4TXTk0LxLv7ZAeprsuOP4N3boBXPQKfLjsYpTZBjyjnf7HsCzdFuzxktPTKg6tm0DlrZBAMLuzi7H8P"
+        auth = requests.get(graph_link)
         print(auth)
         if auth.status_code == 200:
             r = json.loads(auth.text)
@@ -334,17 +335,18 @@ def login():
             email = r['email']
             avatar = r['picture']['data']['url']
             user = User.query.filter_by(facebook=id).first()
-            if user is None:
+            user2 = User.query.filter_by(email=email).first()
+            if user is None and user2 is None:
                 new_user = User(facebook=id, name=name, email=email)
                 db.session.add(new_user)
                 db.session.commit()
                 db.session.refresh(new_user)
                 login_user(new_user)
                 return "added" 
-            if user.email == None:
-                user.email = email
+            user.facebook = id
+            user.email = email
             user.avatar = avatar
-            user.last_seen = datetime.now() 
+            user.last_seen = datetime.hour
             db.session.commit()
             login_user(user)
             return "signed"
