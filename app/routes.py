@@ -364,7 +364,7 @@ def auth():
                 login_user(new_user)
                 return redirect(link_referal)
             user.email = email
-            user.avatar = avatar
+            user.avatar = str(avatar)
             user.last_seen = datetime.hour
             db.session.commit()
             login_user(user)
