@@ -322,17 +322,17 @@ def login():
 @app.route("/login_with_facebook", methods=['GET','POST'])
 def login_with_facebook():
     client_id = "716233336363436"
-    state = base64.encode(request.referrer)
+    state = request.referrer
     redirect_url = url_for("auth", encoded_url = state)
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
 @app.route('/auth?state=<encoded_url>')
 def auth(encoded_url):
-    link_referal = request.referrer
     print(encoded_url)
-    return_url = base64.decode(encoded_url)
-    print(url)
+    return_url = encoded_url
+    print(return_url)
+    link_referal = request.referrer
     x = link_referal.split("#")[1].split("=")[2]
     print(x)
     graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + x
