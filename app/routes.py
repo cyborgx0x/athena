@@ -327,15 +327,15 @@ def login_with_facebook():
     link = "https://www.facebook.com/v14.0/dialog/oauth?" + "client_id=" + client_id + "&redirect_uri=" + redirect_url + "&state=" + state
     return redirect(link)
 
-@app.route('/auth?<code>')
-def auth(code):
-    token = code.split("&")[0].split("=")[1]
-    redirect_link = code.split("&")[1].split("=")[1]
+@app.route('/auth')
+def auth():
+    token = request.args.get("code")
+    redirect_link = request.args.get("state", url_for("index"))
     redirect_link = urllib.parse.unquote(redirect_link)
     print("token:" + token)
     print("redirect:" + redirect_link)
     link_referal = request.referrer
-    print("link referal:" + link_referal)
+    print("link referal:" + str(link_referal))
     graph_link = "https://graph.facebook.com/v14.0/me?fields=id%2Cname%2Cemail%2Cpicture&access_token=" + token
     auth = requests.get(graph_link)
     print(auth)
@@ -359,7 +359,7 @@ def auth(code):
         db.session.commit()
         login_user(user)
         return redirect(link_referal)
-
+    return token,redirect_link
 
 @app.route('/logout')
 def logout():
