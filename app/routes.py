@@ -335,15 +335,13 @@ def login():
             email = r['email']
             avatar = r['picture']['data']['url']
             user = User.query.filter_by(facebook=id).first()
-            user2 = User.query.filter_by(email=email).first()
-            if user is None and user2 is None:
+            if user is None or user2 is None:
                 new_user = User(facebook=id, name=name, email=email)
                 db.session.add(new_user)
                 db.session.commit()
                 db.session.refresh(new_user)
                 login_user(new_user)
                 return "added" 
-            user.facebook = id
             user.email = email
             user.avatar = avatar
             user.last_seen = datetime.hour
