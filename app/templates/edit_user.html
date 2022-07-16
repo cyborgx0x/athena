@@ -1,57 +1,28 @@
-{% extends "layout.html" %}
-{% block title %} Edit {{user.name}}{% endblock %}
-{% block layoutleft %}
-<div  style="margin:5px">
-    <div>
-        <a class="dropdown-item" href="/dashboard/"> 
-            <!-- Download SVG icon from http://tabler-icons.io/i/arrow-back-up -->
-	        <button class=btn>
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1" /></svg>   
-                Trang quản lý
-            </button>
-        </a>
-        <button class="dropdown-item" onclick="showMedia(this)" value="user-basic">Chỉnh sửa thông tin</button>
-        <button class="dropdown-item" onclick="showMedia(this)" value="user-description">Chỉnh sửa tiểu sử</button>
-    </div>
-</div>
-{% endblock %}
-{% block layoutcenter %}
-<div class="card"> 
-    <div class="card-body">
-        <div class="tab-content" id="tab-content">
-            <div class="tab-pane show active" id="user-basic">
-                <div class="alert" role="alert" id="alert-theme">
-                    <h4 class="alert-heading"  id="alert-information"> Mỗi mục đều riêng biệt. Khi chỉnh sửa xong vui lòng nhấn enter </h4>
-                </div>
-                <div class="form-group">
+{% extends "base.html" %}
+{% block title %} Thay đổi thông tin cá nhân{% endblock %}
+{% block content %}
+<div class="row row-deck">
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form class="form-group" action="#" method="post" enctype="multipart/form-data">
                     <label for="user_full_name">Tên đầy đủ</label>
-                    <input type="text" class="form-control" name="user_full_name" id="user_full_name" value="{{user.name}}" onchange="uploadData(this)">
+                    <input type="text" class="form-control" name="user_full_name" id="user_full_name" value="{{user.name}}">
                     <label for="user_avatar">Ảnh cá nhân</label>
-                    <input type="text" class="form-control" name="user_avatar" id="user_avatar" value="{{user.avatar}}" onchange="uploadData(this)">
-                </div>
-                <script>
-                    function uploadData(context) {
-                        console.log(context)
-                        let alert = context.parentNode.previousElementSibling
-                        data = {
-                            type: context.name,
-                            value:context.value
-                        }
-                        axios.post('', data).then((res)=>{
-                            alert.className = "alert alert-success"
-                            alert.firstElementChild.textContent = res.data
-                        }).catch((err)=>{
-                            alert.className = "alert alert-danger"
-                            alert.firstElementChild.textContent = err.message
-                        })
-                    }
-                </script>
+                    <img src="{{user.avatar}}" alt="">
+                    <input type="file" class="form-control" name="user_avatar" id="user_avatar">
+                    <br>
+                    <input type="submit" class="btn btn-success">
+                </form>
             </div>
-            <div class="tab-pane" id="user-description">
-                <!-- <button type="button" class="btn btn-danger" onclick="loadEditor(this)" name="init-button" value="init">Load Editor</button> -->
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-header">Tiểu sử cá nhân</div>
+            <div class="card-body">
                 {% include "_editorjs.html"%}
             </div>
-        
         </div>
     </div>
 </div>

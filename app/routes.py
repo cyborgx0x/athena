@@ -19,7 +19,7 @@ import urllib.parse
 
 @app.route("/")
 def index():
-    top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.id.desc()).limit(20).all()
+    top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.view.desc()).limit(20).all()
     top_creators = User.query.limit(12).all()
     return  render_template("home.html", top_view_collections = top_view_collections, top_creators=top_creators)
 
@@ -85,23 +85,21 @@ def upload_image():
 @app.route("/edit/user/<int:id>", methods=['GET', 'POST'])
 def edit_user(id):
     user = User.query.filter_by(id=id).first()
-    if request.method == 'POST':
-        incoming_data= json.loads(request.data.decode('UTF-8'))
-        if incoming_data["type"] == "content":
-            return jsonify(user.about_me)
-        elif incoming_data["type"] == "upload":
-            user.about_me =incoming_data["value"]
+    if current_user.id == user.id or current_user.type == 1:
+        if request.method == 'POST' and request.form:
+            user.name = request.form.get("user_full_name")
+            res =  upload(request.files["user_avatar"])
+            user.avatar = res["data"]["image"]["url"]
             db.session.commit()
-            return "success 🔥🔥🔥"
-        elif incoming_data["type"] == "user_full_name":
-            user.name = incoming_data["value"]
-            db.session.commit()
-            return "Cập nhật thành công tên 🔥🔥🔥"
-        elif incoming_data["type"] == "user_avatar":
-            user.avatar = incoming_data["value"]
-            db.session.commit()
-            return "Cập nhật thành công avatar 🔥🔥🔥"
-    if current_user.id == user.id:
+            return redirect(url_for("edit_user", id=id))
+        elif request.method == "POST" and current_user.id  == user.id and request.data:
+            incoming_data= json.loads(request.data.decode('UTF-8'))
+            if incoming_data["type"] == "content":
+                return jsonify(user.about_me)
+            elif incoming_data["type"] == "upload":
+                user.about_me =incoming_data["value"]
+                db.session.commit()
+                return "success 🔥🔥🔥"
         return render_template("edit_user.html", user = user)
     else:
         return redirect(url_for("index"))
@@ -115,16 +113,18 @@ def all_collections():
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
     collection = Collection.query.filter_by(id=id).first()
-    medias = Media.query.filter_by(collection_id=id).order_by(Media.id)
-    tags = collection.tag_render()
-    for tag in tags:
-        pass
-    return  render_template("public_collection.html", collection = collection, medias = medias)
+    if collection.view == None:
+        collection.view = 1
+        db.session.commit()
+    else:
+        collection.view += 1
+        db.session.commit()
+    return  render_template("public_collection.html", collection = collection)
 
-@app.route("/user/<user_id>")
-def user_profile(user_id):
-    collections = Collection.query.filter_by(creator_id = user_id, status = "public")
-    user = User.query.filter_by(id = user_id).first()
+@app.route("/user/<id>")
+def user_profile(id):
+    collections = Collection.query.filter_by(creator_id = id, status = "public")
+    user = User.query.filter_by(id = id).first()
     return render_template("user.html", collections = collections, user = user)
 
 @app.route("/year/<publish_year>")
@@ -141,52 +141,36 @@ def tag_view(tag):
 @login_required
 def edit_collection(id):
     collection = Collection.query.filter_by(id=id).first()
-    if request.method == 'POST':
-       
-        incoming_data= json.loads(request.data.decode('UTF-8'))
-        if incoming_data["type"] == "content":
-            return jsonify(collection.desc)
-        elif incoming_data["type"] == "upload":
-            try: 
-                collection.desc = incoming_data["value"]
-                print(collection.desc)
-                db.session.commit()
-                return "Đã cập nhật nội dung"
-            except:
-                return "incoming data invalid"
-        elif incoming_data["type"] == "collection_name":
-            collection.name = incoming_data["value"]
-            db.session.commit()
-            return "name updated"
-        elif incoming_data["type"] == "tag-manage":
-            collection.tag = incoming_data["value"]
-            db.session.commit()
-            return "tag updated"
-        elif incoming_data["type"] == "book-cover":
-            collection.cover = incoming_data["value"]
-            db.session.commit()
-            return "Đã cập nhật ảnh bìa"
-        elif incoming_data["type"] == "short-desc":
-            collection.short_desc = incoming_data["value"]
-            db.session.commit()
-            return "Mô tả ngắn được cập nhật"
-        elif incoming_data["type"] == "collection-author":
-            collection.author_id = incoming_data["value"]
-            db.session.commit()
-            return "Đã cập nhật tác giả"
-        elif incoming_data["type"] == "download":
-            collection.download = incoming_data["value"]
-            db.session.commit()
-            return "Đã cập nhật link download"
-        elif incoming_data["type"] == "collection-status":
-            collection.status = incoming_data["value"]
-            db.session.commit()
-            if collection.status == "public":
-                return "Đã thay đổi trạng thái thành: Công khai"
-            else:
-                return "Đã trở về bản nháp"
-    print(current_user.id, collection.creator_id)
     if current_user.id == collection.creator_id or current_user.type == 1:
+        if request.method == 'POST' and request.form:
+            data= request.form
+            collection.name = data.get("collection_name")
+            collection.tag = data.get("tag-manage")
+            collection.short_desc = data.get("short-desc")
+            collection.download = data.get("download")
+            res = upload(request.files["book-cover"])
+            collection.cover = res["data"]["image"]["url"]
+            db.session.commit()
+            return redirect(url_for('edit_collection', id=id))
+        elif request.method == "POST" and request.data: 
+            incoming_data = json.loads(request.data.decode('UTF-8'))
+            if incoming_data["type"] == "content":
+                return jsonify(collection.desc)
+            elif incoming_data["type"] == "upload":
+                try: 
+                    collection.desc = incoming_data["value"]
+                    print(collection.desc)
+                    db.session.commit()
+                    return "Đã cập nhật nội dung"
+                except:
+                    return "incoming data invalid"
+            elif incoming_data["type"] == "collection-status":
+                collection.status = incoming_data["value"]
+                db.session.commit()
+                if collection.status == "public":
+                    return "Đã thay đổi trạng thái thành: Công khai"
+                else:
+                    return "Đã trở về bản nháp"
         return  render_template("edit_collection.html", collection = collection)
     else:
         return  redirect(url_for("index"))
@@ -216,24 +200,24 @@ def public_media(id):
 @login_required
 def edit_media(id):
     chapter = Media.query.filter_by(id=id).first()
-    if request.method == 'POST':
-        incoming_data = json.loads(request.data.decode('UTF-8'))
-        if incoming_data["type"] == "chapter_name":
-            chapter.name = incoming_data["value"]
-            db.session.commit()
-            return "Đã cập nhật tên chương"
-        if incoming_data["type"] == "chapter_order":
-            chapter.chapter_order = incoming_data["value"]
-            db.session.commit()
-            return "Đã cập nhật thứ tự"
-        elif incoming_data["type"] == "content":
-            return jsonify(chapter.content)
-        elif incoming_data["type"] == "upload":
-            chapter.content = incoming_data["value"]
-            print(chapter.content)
-            db.session.commit()
-            return "Đã cập nhật nội dung chương"
     if current_user.id == chapter.user_id or current_user.type == 1:
+        if request.method == 'POST':
+            incoming_data = json.loads(request.data.decode('UTF-8'))
+            if incoming_data["type"] == "chapter_name":
+                chapter.name = incoming_data["value"]
+                db.session.commit()
+                return "Đã cập nhật tên chương"
+            if incoming_data["type"] == "chapter_order":
+                chapter.chapter_order = incoming_data["value"]
+                db.session.commit()
+                return "Đã cập nhật thứ tự"
+            elif incoming_data["type"] == "content":
+                return jsonify(chapter.content)
+            elif incoming_data["type"] == "upload":
+                chapter.content = incoming_data["value"]
+                print(chapter.content)
+                db.session.commit()
+                return "Đã cập nhật nội dung chương"
         return render_template('edit_media.html', chapter=chapter)
     else:
         return redirect(url_for("dashboard"))

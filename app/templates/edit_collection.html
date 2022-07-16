@@ -42,21 +42,22 @@
                 {% include "_editorjs.html"%}
             </div>
             <div class="tab-pane active show" id="edit-collection">
-                <div class="alert" role="alert" id="alert-theme">
-                    <h4 class="alert-heading"  id="alert-information"> Mỗi mục đều riêng biệt. Khi chỉnh sửa xong vui lòng nhấn enter </h4>
-                </div>
-                <div class="form-group">
+                <form class="form-group" action="#" method="post" enctype="multipart/form-data">
                     <label for="collection_name">Tiêu đề tác phẩm</label>
                     <input type="text" class="form-control" name="collection_name" id="collection_name" value="{{collection.name}}">
                     <label for="tag-manage">Tag:</label>
                     <input type="text" name="tag-manage" id="tag-manage" value="{{collection.tag}}" class="form-control">
                     <label for="book-cover">Ảnh bìa</label>
-                    <input type="text" name="book-cover" id="book-cover" value="{{collection.cover}}" class="form-control">
+                    <img src="{{ collection.cover }}" alt="">
+                    <input type="file" name="book-cover" id="book-cover" class="form-control">
                     <label for="short-desc">Mô tả ngắn</label>
-                    <input type="text" name="short-desc" id="short-desc" value="{{collection.short_desc}}" class="form-control">
+                    <textarea type="text" name="short-desc" id="short-desc" value="" class="form-control">{{collection.short_desc}}</textarea>
                     <label for="download">Mega Link</label>
                     <input type="text" name="download" id="download" value="{{collection.download}}" class="form-control">
-                </div>
+                    <br>
+                    <input type="submit" name="submit" id="" class="btn btn-success">
+            
+                </form>
                 
             </div>
             
@@ -93,25 +94,25 @@
             context.parentNode.innerHTML=editor
         })
     }
-    let input = document.getElementById('edit-collection').querySelectorAll('.form-control')
-    console.log(input)
-    for (let i=0; i<input.length;i++) {
-        console.log(input[i])
-        input[i].addEventListener('change', (e)=>{
-            console.log(e.target.name)
-            axios.post('', {type:e.target.name, value:e.target.value})
-            .then((res)=>{
-                console.log(res);
-                document.getElementById('alert-information').textContent='Result: ' + res.data;
-                document.getElementById('alert-theme').className = 'alert alert-success';
-            })
-            .catch((err)=>{
-                console.log(err.message);
-                document.getElementById('alert-information').textContent=err.message
-                document.getElementById('alert-theme').className = 'alert alert-danger'
-            })
-        })
-    }
+    // let input = document.getElementById('edit-collection').querySelectorAll('.form-control')
+    // console.log(input)
+    // for (let i=0; i<input.length;i++) {
+    //     console.log(input[i])
+    //     input[i].addEventListener('change', (e)=>{
+    //         console.log(e.target.name)
+    //         axios.post('', {type:e.target.name, value:e.target.value})
+    //         .then((res)=>{
+    //             console.log(res);
+    //             document.getElementById('alert-information').textContent='Result: ' + res.data;
+    //             document.getElementById('alert-theme').className = 'alert alert-success';
+    //         })
+    //         .catch((err)=>{
+    //             console.log(err.message);
+    //             document.getElementById('alert-information').textContent=err.message
+    //             document.getElementById('alert-theme').className = 'alert alert-danger'
+    //         })
+    //     })
+    // }
 
 </script>
 {% endblock %}

@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="main-content" id="detailInfomation" aria-expanded="false" style="font-size: 1.2em;">
-                        {{ collection.render_text() }}
+                        {{ collection.desc | render}}
     
                     </div>
                     <a href="#detailInfomation" ></a>
@@ -39,6 +39,7 @@
                     </table>
                 </div>
             </div>
+            <div class="fb-comments" data-href="https://athena-publication.herokuapp.com{{url_for('public_collection', id=collection.id)}}" data-width="" data-numposts="5"></div>
         </div>
         
     </div>

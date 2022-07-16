@@ -3,7 +3,7 @@
 
 {% block layoutleft %}
 <div  style="margin:5px">
-    <div class="bg-dark text-white">
+    <div>
         <a class="dropdown-item" href="{{url_for('edit_collection', id=chapter.collection_id)}}#manage-chapter">Trở về quản lý tác phẩm</a>
         <a class="dropdown-item" href="{{url_for('public_media', id=chapter.id)}}#manage-chapter">Đọc chương này</a>
         <button class="dropdown-item" onclick="showMedia(this)" value="edit_chapter">Chỉnh sửa</button>
@@ -33,7 +33,7 @@
                 <h1> Số liệu chương </h1>
                 Lượt đọc: 
                 <span class="badge bg-cyan">
-                    {{chapter.view}} 👁 views, {{chapter.mediaaction| count}} 📜 đánh dấu
+                    {{chapter.view}} 👁 views
                 </span> </a> 
             </div>
         </div>
