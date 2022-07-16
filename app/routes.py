@@ -105,8 +105,11 @@ def edit_user(id):
 
 @app.route("/all_collections")
 def all_collections():
-    all_collections = Collection.query.filter_by(status="public")
-    return  render_template("all_collections.html", all_collections = all_collections, title =  "Tất cả tác phẩm")
+    page = request.args.get("page", 1, type=int)
+    all_collections = Collection.query.filter_by(status="public").order_by(Collection.name.desc()).paginate(page, 4, False)
+    next_page = url_for("all_collections", page = all_collections.next_num) if all_collections.has_next else None
+    prev_page = url_for("all_collections", page = all_collections.prev_num) if all_collections.has_prev else None
+    return  render_template("all_collections.html", all_collections = all_collections.items, title =  "Tất cả tác phẩm", next_page = next_page, prev_page = prev_page)
 
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
