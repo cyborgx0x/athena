@@ -14,7 +14,7 @@
             <div class="card" style="height: 500px; overflow:scroll">
                 <div class="card-body">
                     <div class="main-content" id="detailInfomation" aria-expanded="false">
-                        {{ collection.desc | render }}
+                        {{ collection.render_text() }}
     
                     </div>
                     <a href="#detailInfomation" ></a>
@@ -31,7 +31,7 @@
                                     <a href="{{url_for('public_media', id=i.id)}}">{{i.name}}</a>
                                 </td>
                                 <td>
-                                    {{i.time}}
+                                    {{i.time.ctime() }}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -47,24 +47,24 @@
         <div class="card">
 
             <div>
-                <img src="{{ collection.cover }}" alt="">
+                <img src="{{ collection.cover }}" alt="" class="cover">
             </div>
+            <br>
             <div>
                 {% if current_user.id == collection.creator_id %}
-                <a href="{{url_for("edit_collection", id=collection.id)}}" class="btn">Quản lý tác phẩm</a>
+                <center>
+                    <a href="{{url_for("edit_collection", id=collection.id)}}" class="btn btn-danger">Quản lý tác phẩm</a>
+                </center>
                 {% else %}
                 {% endif %}
             </div>
             <div class="card-body">
-                <p>Tác giả: 
-                    <a href="/author/{{ collection.author }}" class="btn btn-primary">
-                        {{ collection.author}}
+                <p>Đăng bởi: 
+                    <a href="/user/{{ collection.creator_id }}" class="nav-link">
+                        {{ collection.owner.name }}
                     </a>
-                </p>
-                <p><strong>Thể loại: </strong>{{ collection.type.name }}</p>
-                
-                
-                <p><strong>Thẻ đánh dấu: </strong>
+                </p>               
+                <p><strong>Thể loại:</strong>
                     {% if collection.tag == None %}
                     No Tag
                     {% else %}
@@ -76,14 +76,6 @@
                     {% endwith %}
                     {% endif %}
                 </p>
-                {% if collection.publish_year %}
-                <h4>Năm xuất bản:</h4>
-                <strong><a href="/year/{{ collection.publish_year}}">{{ collection.publish_year}}</a></strong>
-                {% else %}
-                <p>
-                    Không rõ thời gian
-                </p>
-                {% endif %}
                 {% if collection.download %}
                 <div>
                     <a href="{{ collection.download }}">Tải về</a>

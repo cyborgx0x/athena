@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{user.user_name}}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12 col-md-4">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                <span class="avatar avatar-xl mb-3 avatar-rounded" height="1.2rem">
+                    <img src="{{user.load_avatar()}}" alt="" class="avatar avatar-xl mb-3 avatar-rounded" id="avatar">
+                </span>
+                <h3 class="m-0 mb-1">
+                        {{user.name}}
+                </h3>
+                <div class="mt-3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-8">
+        <div class="row row-deck"> 
+            {% for collection in collections %}
+            <div class="col-6 col-md-4">
+                {% include '_collection.html'  %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

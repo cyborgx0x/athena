@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from re import T
 from flask_login import UserMixin
+from markupsafe import Markup
 from sqlalchemy import MetaData, Text, Unicode, UnicodeText, JSON, Column, Integer, String, DateTime, ForeignKey
 from flask_sqlalchemy import Model
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -21,14 +22,12 @@ class Collection(db.Model):
     '''
     id:int = Column(Integer, primary_key=True, autoincrement=True)
     name:str = Column(Unicode(300))
-    author:str = Column(Unicode(300))
     tag:str = Column(Unicode(300))
     status = Column(Unicode(300), default ="draft")
     short_desc:str = Column(String(160))
     desc = Column(JSON)
     cover_data = Column(JSON)
     cover:str = Column(Text)
-    publish_year = Column(Integer)
     download = Column(Unicode(500))
     time = Column(DateTime, default=datetime.now())
     view = Column(Integer)
@@ -51,19 +50,19 @@ class Collection(db.Model):
         name = incoming_data["type"]
         print(self.desc['blocks'])
         return "success"
-    def render_cover(self):
-        img = self.cover
-        crop_image = return_img(img)
-        file_data = base64.b64encode(crop_image.getvalue()).decode()
-        data = {
-            "image":file_data
-        }
-        api = "b4efdd223b0240f2b1212a0cef3bda37"
-        link = "https://api.imgbb.com/1/upload?key="
-        response = requests.post(link+api, data=data)
-        self.cover_data = response.json()    
-
-
+    def render_text(self):
+        render = []
+        for item in self.desc["blocks"]:
+            if item["type"] == "paragraph":
+                render.append("<p>" + item["data"]["text"] + "</p>")
+            elif item["type"] == "header":
+                render.append("<h2>" + item["data"]["text"] + "</h2>")
+            elif item["type"] == "list":
+                render.append(str(item["data"]))
+            elif item["type"] == "image":
+                render.append("<img class='render-image' src='{0}'>".format(item["data"]["file"]["url"]))
+        output = "\n".join(render)
+        return Markup(output)
 
 @dataclass
 class Media(db.Model):
@@ -128,4 +127,13 @@ class User(UserMixin, db.Model):
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
-
+    def load_avatar(self):
+        if self.avatar == None:
+            r = requests.get("https://api.thecatapi.com/v1/images/search")
+            if r.status_code == 200:
+                link = r.json()
+                link = link[0]
+                link = dict(link)["url"]
+                return link
+        else: 
+            return self.avatar

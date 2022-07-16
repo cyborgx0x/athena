@@ -121,10 +121,11 @@ def public_collection(id):
         pass
     return  render_template("public_collection.html", collection = collection, medias = medias)
 
-@app.route("/author/<author_name>")
-def author_view(author_name):
-    collections = Collection.query.filter_by(author = author_name)
-    return render_template("all_collections.html", all_collections = collections, title = author_name +  ": Tất cả tác phẩm")
+@app.route("/user/<user_id>")
+def user_profile(user_id):
+    collections = Collection.query.filter_by(creator_id = user_id)
+    user = User.query.filter_by(id = user_id).first()
+    return render_template("user.html", collections = collections, user = user)
 
 @app.route("/year/<publish_year>")
 def year_view(publish_year):
