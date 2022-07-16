@@ -30,12 +30,33 @@
                 <div>
                     <a  class="btn" href={{url_for('new_chapter', collection_id=collection.id)}}>Tạo Chương Mới</a>
                 </div>
-                <h2>Bấm vào link để chỉnh sửa chương</h2>
-                {% for chapter in collection.media %}
-                <li class="dropdown-item">  
-                    <a href="{{url_for('edit_media', id=chapter.id)}}" class="link-info large">{{chapter.name}}</a> 
-                </li>                
-                {% endfor %}
+                <table class="table table-vcenter">
+                    <thead>
+                        <tr>
+                            <td>
+                                Tên Chương
+                            </td>
+                            <td>
+                                Lượt xem
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chapter in collection.media %}
+                        <tr>
+                            <td>
+                                <a href="{{url_for('edit_media', id=chapter.id)}}" class="link-info large">{{chapter.name}}</a> 
+                            </td>
+                            <td>
+                                {{chapter.view if chapter.view else 0 }}
+                            </td>
+                            <td>
+                                <a href="/delete?type=media&id={{chapter.id}}">Xóa</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>             
             </div>
             <div class="tab-pane" id="edit-foreword">
                 <!-- <button type="button" class="btn btn-danger" onclick="loadEditor(this)" name="init-button" value="init">Load Editor</button> -->

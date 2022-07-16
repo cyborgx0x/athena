@@ -69,9 +69,7 @@ def upload_image_by_link():
 @app.route("/upload_image",methods = ['GET', 'POST'])
 def upload_image():
     if request.method == "POST":
-        file  = request.files["image"]
-        data  = file
-        res = upload(data)
+        res = upload(request.files["image"])
         print(res)
         r = {
             "success" : 1,
@@ -112,6 +110,7 @@ def all_collections():
 
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
+    
     collection = Collection.query.filter_by(id=id).first()
     if collection.view == None:
         collection.view = 1
@@ -127,10 +126,6 @@ def user_profile(id):
     user = User.query.filter_by(id = id).first()
     return render_template("user.html", collections = collections, user = user)
 
-@app.route("/year/<publish_year>")
-def year_view(publish_year):
-    collections = Collection.query.filter_by(publish_year = publish_year)
-    return render_template("all_collections.html", all_collections = collections, title = publish_year +  ": Tất cả tác phẩm")
 
 @app.route("/tag/<tag>")
 def tag_view(tag):
@@ -263,19 +258,34 @@ def new_collection():
 
 @app.route("/delete", methods=['GET', 'POST'])
 def delete_item():
-    return
+    print(request.args)
+    type = request.args.get("type")
+    id = request.args.get("id")
+    if type == "collection":
+        col = Collection.query.filter_by(id = id).first()
+        if current_user.id == col.creator_id or current_user.type == 1:
+            Media.query.filter_by(collection_id = id).delete()
+            Collection.query.filter_by(id = id).delete()
+            db.session.commit()
+            return redirect(request.referrer)
+        else:
+            return redirect(request.referrer)
+    elif type == "media":
+        media = Media.query.filter_by(id=id).first()
+        if current_user.id == media.user_id or current_user.type == 1:
+            Media.query.filter_by(id=id).delete()
+            db.session.commit()
+            return redirect(request.referrer)
+        else: 
+            return redirect(request.referrer)
+    else:
+        return redirect(request.referrer)
 
 
 '''
 User Session
 Contain route about user authentication, profile, configuration and dashboard
 '''
-@app.route('/authorized', methods=['GET','POST'])
-def authorized():
-    access_token = request.args.get("access_token")
-    print("facebook")
-    return redirect(url_for('index'))
-
 
 @app.route('/login', methods=['GET','POST'])
 def login():
