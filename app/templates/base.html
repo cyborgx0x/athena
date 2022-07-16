@@ -141,15 +141,17 @@
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
               </li>
               {% else %}
-              <li class="nav-item">
-                <a href="{{url_for('new_collection')}}" type="button" class="btn">Đăng tác phẩm mới</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-              </li>
+              
+              <div class="nav-item dropdown">
+                <a type="button" class="btn" data-bs-toggle="dropdown">
+                  {{current_user.name}} 
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                  <a href="{{url_for('new_collection')}}" type="button" class="dropdown-item">Đăng tác phẩm mới</a>
+                  <a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a>
+                  <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                </div>
+              </div>
               {% endif %}
             
           </ul>

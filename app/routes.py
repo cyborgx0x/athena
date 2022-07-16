@@ -123,7 +123,7 @@ def public_collection(id):
 
 @app.route("/user/<user_id>")
 def user_profile(user_id):
-    collections = Collection.query.filter_by(creator_id = user_id)
+    collections = Collection.query.filter_by(creator_id = user_id, status = "public")
     user = User.query.filter_by(id = user_id).first()
     return render_template("user.html", collections = collections, user = user)
 
