@@ -154,10 +154,6 @@ def edit_collection(id):
                 return "Đã cập nhật nội dung"
             except:
                 return "incoming data invalid"
-        elif incoming_data["type"] == "publish_year":
-            collection.publish_year = incoming_data["value"]
-            db.session.commit()
-            return "year updated"
         elif incoming_data["type"] == "collection_name":
             collection.name = incoming_data["value"]
             db.session.commit()
@@ -166,14 +162,8 @@ def edit_collection(id):
             collection.tag = incoming_data["value"]
             db.session.commit()
             return "tag updated"
-        elif incoming_data["type"] == "author":
-            input_author = incoming_data["value"]
-            collection.author = input_author
-            db.session.commit()
-            return "added author"
         elif incoming_data["type"] == "book-cover":
             collection.cover = incoming_data["value"]
-            collection.render_cover()
             db.session.commit()
             return "Đã cập nhật ảnh bìa"
         elif incoming_data["type"] == "short-desc":

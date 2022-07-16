@@ -27,7 +27,7 @@
         <div id="currentChapter" data="{{chapter.id}}"></div>
         <div class="card-title" id="exampleModalLabel"></div>
         
-        <div class="main-content" id=mainContent>
+        <div class="main-content" id=mainContent style="font-size: 1.2em;">
           {{ chapter.content | render }}
         </div>
       </div>
@@ -45,13 +45,18 @@
             <a href="{{url_for('public_collection', id=collection.id)}}" class="nav-link">{{collection.name}}</a>
           </h4>
         </div>
-        <a class="nav-link" href="/collection/{{collection.id}}">
-          <!-- Download SVG icon from http://tabler-icons.io/i/info-circle -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9" /><line x1="12" y1="8" x2="12.01" y2="8" /><polyline points="11 12 12 12 12 16 13 16" /></svg>
-          <span class="nav-item">
-            Trang tác phẩm
-          </span>
-        </a>
+        {% set all_chapters =  chapter.collection.media %}
+        <table>
+          <tbody>
+            {% for c in all_chapters | sort(attribute="id") %}
+            <tr>
+              <td>
+                <a href="{{url_for('public_media', id = c.id)}}" class="">{{c.name}}</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
