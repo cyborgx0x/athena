@@ -111,6 +111,7 @@ def all_collections():
     prev_page = url_for("all_collections", page = all_collections.prev_num) if all_collections.has_prev else None
     return  render_template("all_collections.html", all_collections = all_collections.items, title =  "Tất cả tác phẩm", next_page = next_page, prev_page = prev_page)
 
+
 @app.route("/collection/<int:id>/", methods=['GET', 'POST'])
 def public_collection(id):
     
@@ -121,13 +122,18 @@ def public_collection(id):
     else:
         collection.view += 1
         db.session.commit()
+    
     return  render_template("public_collection.html", collection = collection)
 
 @app.route("/user/<id>")
 def user_profile(id):
-    collections = Collection.query.filter_by(creator_id = id, status = "public")
+    page = request.args.get("page", 1, type=int)
+    all_collections = Collection.query.filter_by(creator_id = id, status = "public").paginate(page, 4, False)
     user = User.query.filter_by(id = id).first()
-    return render_template("user.html", collections = collections, user = user)
+    next_page = url_for("user_profile", id=id, page = all_collections.next_num) if all_collections.has_next else None
+    prev_page = url_for("user_profile", id=id, page = all_collections.prev_num) if all_collections.has_prev else None
+ 
+    return render_template("user.html", collections = all_collections.items, user = user, next_page=next_page, prev_page=prev_page)
 
 
 @app.route("/tag/<tag>")
@@ -382,7 +388,11 @@ def register():
 @app.route('/dashboard/')
 @login_required
 def dashboard():
+    page  = request.args.get("page", 1, type=int)
     user = User.query.filter_by(id=current_user.id).first_or_404()
-    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).all()
-    return render_template('dash.html', user=user, all_collections=all_collections)
+    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).paginate(page,4, False)
+    next_page = url_for("dashboard", page = all_collections.next_num) if all_collections.has_next else None
+    prev_page = url_for("dashboard", page = all_collections.prev_num) if all_collections.has_prev else None
+ 
+    return render_template('dash.html', user=user, all_collections=all_collections.items, next_page = next_page, prev_page = prev_page)
 

@@ -8,6 +8,7 @@
     <script src="{{url_for('static', filename='header@latest.js')}}"></script>
     <script src="{{url_for('static', filename='list@latest.js')}}"></script>
     <script src="{{url_for('static', filename='image@2.3.0.js')}}"></script>
+    <script src="{{url_for('static', filename='math.js')}}"></script>
     <script>
         axios.post('', {type:"content"})
         .then((response) => {
@@ -18,6 +19,9 @@
                     list: {
                     class: List,
                     inlineToolbar: true,
+                    },
+                    math: {
+                    class: MathTex, // for CDN: window.MathTex
                     },
                     image: {
                         class: ImageTool,

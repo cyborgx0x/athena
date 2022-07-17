@@ -25,6 +25,29 @@
             </div>
             {% endfor %}
         </div>
+        <div >
+            <ul class="pagination">
+              {% if prev_page %}
+              <li class="page-item page-prev">
+                <a href="{{prev_page}}" class="page-link">Trang trước</a>
+              </li>
+              {% else %}
+              <li class="page-item page-prev disabled">
+                <a href="#" class="page-link">Trang trước</a>
+              </li>
+              {% endif %}
+              {% if next_page %}
+              <li class="page-item page-next">
+                <a href="{{next_page}}" class="page-link">Trang sau</a>
+              </li>
+              {% else %}
+              <li class="page-item page-next disabled">
+                <a href="#" class="page-link">Trang sau</a>
+              </li>
+              {% endif %}
+            </ul>
+          
+          </div>
     </div>
 </div>
 {% endblock %}
