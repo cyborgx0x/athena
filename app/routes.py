@@ -1,6 +1,4 @@
 import json, os
-import re
-import io
 from flask import (Flask, Markup, flash, jsonify, redirect, render_template,
                    request, send_file, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
@@ -8,7 +6,6 @@ from sqlalchemy import func
 from tools import *
 from werkzeug.datastructures import ImmutableMultiDict
 from werkzeug.urls import url_parse
-import ast
 import requests
 from app import app, db
 from app.form import (LoginForm,
@@ -86,8 +83,11 @@ def edit_user(id):
     if current_user.id == user.id or current_user.type == 1:
         if request.method == 'POST' and request.form:
             user.name = request.form.get("user_full_name")
-            res =  upload(request.files["user_avatar"])
-            user.avatar = res["data"]["image"]["url"]
+            try:
+                res =  upload(request.files["user_avatar"])
+                user.avatar = res["data"]["image"]["url"]
+            except requests.exceptions.JSONDecodeError as e:
+                print(e.strerror)
             db.session.commit()
             return redirect(url_for("edit_user", id=id))
         elif request.method == "POST" and current_user.id  == user.id and request.data:
@@ -106,7 +106,7 @@ def edit_user(id):
 @app.route("/all_collections")
 def all_collections():
     page = request.args.get("page", 1, type=int)
-    all_collections = Collection.query.filter_by(status="public").order_by(Collection.name.desc()).paginate(page, 4, False)
+    all_collections = Collection.query.filter_by(status="public").order_by(Collection.name.desc()).paginate(page=page)
     next_page = url_for("all_collections", page = all_collections.next_num) if all_collections.has_next else None
     prev_page = url_for("all_collections", page = all_collections.prev_num) if all_collections.has_prev else None
     return  render_template("all_collections.html", all_collections = all_collections.items, title =  "Tất cả tác phẩm", next_page = next_page, prev_page = prev_page)
@@ -128,7 +128,7 @@ def public_collection(id):
 @app.route("/user/<id>")
 def user_profile(id):
     page = request.args.get("page", 1, type=int)
-    all_collections = Collection.query.filter_by(creator_id = id, status = "public").paginate(page, 4, False)
+    all_collections = Collection.query.filter_by(creator_id = id, status = "public").paginate(page=page)
     user = User.query.filter_by(id = id).first()
     next_page = url_for("user_profile", id=id, page = all_collections.next_num) if all_collections.has_next else None
     prev_page = url_for("user_profile", id=id, page = all_collections.prev_num) if all_collections.has_prev else None
@@ -390,7 +390,7 @@ def register():
 def dashboard():
     page  = request.args.get("page", 1, type=int)
     user = User.query.filter_by(id=current_user.id).first_or_404()
-    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).paginate(page,4, False)
+    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).paginate(page=page)
     next_page = url_for("dashboard", page = all_collections.next_num) if all_collections.has_next else None
     prev_page = url_for("dashboard", page = all_collections.prev_num) if all_collections.has_prev else None
  
