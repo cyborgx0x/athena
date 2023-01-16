@@ -36,3 +36,4 @@ pillow
 mysqlclient
 Flask-Markdown
 psycopg2-binary
+python-dotenv

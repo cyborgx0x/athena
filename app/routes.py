@@ -13,6 +13,8 @@ from app.form import (LoginForm,
 from app.models import (Collection, Media, User)
 from datetime import datetime
 import urllib.parse
+from .request import Collection_Request
+
 
 @app.route("/")
 def index():
@@ -147,14 +149,11 @@ def edit_collection(id):
     collection = Collection.query.filter_by(id=id).first()
     if current_user.id == collection.creator_id or current_user.type == 1:
         if request.method == 'POST' and request.form:
-            data= request.form
-            collection.name = data.get("collection_name")
-            collection.tag = data.get("tag-manage")
-            collection.short_desc = data.get("short-desc")
-            collection.download = data.get("download")
-            res = upload(request.files["book-cover"])
-            collection.cover = res["data"]["image"]["url"]
-            db.session.commit()
+            request_handle = Collection_Request(db=db, model=collection)
+            if request_handle.populate(request.form):
+                request_handle.save()
+            # res = upload(request.files["book-cover"])
+            # collection.cover = res["data"]["image"]["url"]
             return redirect(url_for('edit_collection', id=id))
         elif request.method == "POST" and request.data: 
             incoming_data = json.loads(request.data.decode('UTF-8'))
