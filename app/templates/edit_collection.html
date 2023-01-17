@@ -60,7 +60,11 @@
             </div>
             <div class="tab-pane" id="edit-foreword">
                 <!-- <button type="button" class="btn btn-danger" onclick="loadEditor(this)" name="init-button" value="init">Load Editor</button> -->
-                {% include "_editorjs.html"%}
+                {% with %}
+                    {% set id = collection.id %}
+                    {% set field = "collection" %}
+                    {% include "_editorjs.html"%}
+                {% endwith %}
             </div>
             <div class="tab-pane active show" id="edit-collection">
                 <form class="form-group" action="#" method="post" enctype="multipart/form-data">
@@ -86,7 +90,7 @@
                 <script>
                     function saveContent(context) {
                         console.log(context.options[context.options.selectedIndex].value)
-                        axios.post('', {type:context.name, value:context.options[context.options.selectedIndex].value}).then((res) => {
+                        axios.post('', {status:context.options[context.options.selectedIndex].value}).then((res) => {
                             alert(res.data)
                         })
                     }

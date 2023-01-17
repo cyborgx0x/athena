@@ -13,8 +13,9 @@ from app.form import (LoginForm,
 from app.models import (Collection, Media, User)
 from datetime import datetime
 import urllib.parse
-from .request import Collection_Request
-
+from .request import Collection_Request, Media_Request
+from .process import ImageHandler
+from .repo import Repo
 
 @app.route("/")
 def index():
@@ -149,34 +150,30 @@ def edit_collection(id):
     collection = Collection.query.filter_by(id=id).first()
     if current_user.id == collection.creator_id or current_user.type == 1:
         if request.method == 'POST' and request.form:
-            request_handle = Collection_Request(db=db, model=collection)
+            request_handle = Collection_Request()
             if request_handle.populate(request.form):
-                request_handle.save()
-            # res = upload(request.files["book-cover"])
-            # collection.cover = res["data"]["image"]["url"]
+                if request.files:
+                    image = ImageHandler(request.files["book-cover"])
+                    request_handle.image = image
+                    request_handle.image_upload()
+                repo = Repo(db=db, model=collection)
+                repo.save(request_handle)
             return redirect(url_for('edit_collection', id=id))
-        elif request.method == "POST" and request.data: 
-            incoming_data = json.loads(request.data.decode('UTF-8'))
-            if incoming_data["type"] == "content":
-                return jsonify(collection.desc)
-            elif incoming_data["type"] == "upload":
-                try: 
-                    collection.desc = incoming_data["value"]
-                    print(collection.desc)
-                    db.session.commit()
-                    return "Đã cập nhật nội dung"
-                except:
-                    return "incoming data invalid"
-            elif incoming_data["type"] == "collection-status":
-                collection.status = incoming_data["value"]
-                db.session.commit()
-                if collection.status == "public":
-                    return "Đã thay đổi trạng thái thành: Công khai"
-                else:
-                    return "Đã trở về bản nháp"
+        elif request.method == "POST" and request.data:
+            request_handle = Collection_Request()
+            if request_handle.byte_handle(request=request.data):
+                repo = Repo(db=db, model=collection)
+                status = repo.save(request_handle)
+                return jsonify(status)
         return  render_template("edit_collection.html", collection = collection)
     else:
         return  redirect(url_for("index"))
+
+@app.route("/api/collection/<int:id>/")
+@login_required
+def collection_content(id):
+    collection = Collection.query.filter_by(id=id).first()
+    return jsonify(collection.desc)
 
 
 @app.route("/collection/<collection_name>/")
@@ -204,7 +201,8 @@ def public_media(id):
 def edit_media(id):
     chapter = Media.query.filter_by(id=id).first()
     if current_user.id == chapter.user_id or current_user.type == 1:
-        if request.method == 'POST':
+        if request.method == 'POST' and request.data:
+
             incoming_data = json.loads(request.data.decode('UTF-8'))
             if incoming_data["type"] == "chapter_name":
                 chapter.name = incoming_data["value"]
@@ -224,8 +222,6 @@ def edit_media(id):
         return render_template('edit_media.html', chapter=chapter)
     else:
         return redirect(url_for("dashboard"))
-
-
 
 
 '''
