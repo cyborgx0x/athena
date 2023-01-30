@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flaskext.markdown import Markdown
 from dotenv import load_dotenv
+from auth.auth import auth_bp
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -16,5 +18,5 @@ login = LoginManager(app)
 login.login_view = 'login'
 Markdown(app)
 Process(app)
-
+app.register_blueprint(auth_bp)
 from app import models, routes
