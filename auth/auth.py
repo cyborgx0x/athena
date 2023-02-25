@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, Response
 from flask_login import current_user, login_user, logout_user
 from app.models import User
 from app import db
@@ -27,7 +27,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulation, you are now a registered user!')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_bp.login'))
     return render_template('reg.html', title='Register', form=form)
 
 
@@ -101,3 +101,53 @@ def auth():
             login_user(user)
             return redirect(link_referal)
     return redirect(url_for("index"))
+
+
+    
+@auth_bp.route("/api/v1/auth", methods=["POST"])
+def authentication():
+    
+    data = json.loads(request.data.decode("UTF-8"))
+    username = data["username"]
+    password = data["password"]
+    if username != "admin":
+        return Response(response="Not Found", status=401)
+    response = {
+    'id': 1,
+    'name': "Thuan Nguyen",
+    'username': 'admin',
+    'password': '',
+    'avatar': 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png',
+    'status': 1,
+    'telephone': '',
+    'lastLoginIp': '27.154.74.117',
+    'lastLoginTime': 1534837621348,
+    'creatorId': 'admin',
+    'createTime': 1497160610259,
+    'deleted': 0,
+    'roleId': 'admin',
+    'lang': 'zh-CN',
+    'token': '4291d7da9005377ec9aec4a71ea837f'
+    }
+    return {"result": response}
+
+@auth_bp.route("/api/v1/user/info", methods=["GET"])
+def get_user_info():
+    user_info = {
+        "id": '4291d7da9005377ec9aec4a71ea837f',
+        "name": '天野远子',
+        "username": 'admin',
+        "password": '',
+        "avatar": '/avatar2.jpg',
+        "status": 1,
+        "telephone": '',
+        "lastLoginIp": '27.154.74.117',
+        "lastLoginTime": 1534837621348,
+        "creatorId": 'admin',
+        "createTime": 1497160610259,
+        "merchantCode": 'TLif2btpzg079h15bk',
+        "deleted": 0,
+        "roleId": 'admin',
+        "role": {}
+    }
+    return {"result": user_info}
