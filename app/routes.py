@@ -291,9 +291,8 @@ Contain route about user authentication, profile, configuration and dashboard
 def dashboard():
     page  = request.args.get("page", 1, type=int)
     user = User.query.filter_by(id=current_user.id).first_or_404()
-    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).paginate(page=page)
+    all_collections = Collection.query.filter_by(creator_id=current_user.id).order_by(Collection.id.desc()).paginate(page=page,per_page=4, error_out = False)
     next_page = url_for("dashboard", page = all_collections.next_num) if all_collections.has_next else None
     prev_page = url_for("dashboard", page = all_collections.prev_num) if all_collections.has_prev else None
- 
     return render_template('dash.html', user=user, all_collections=all_collections.items, next_page = next_page, prev_page = prev_page)
 
