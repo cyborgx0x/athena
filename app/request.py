@@ -17,7 +17,7 @@ class Request(object):
             field = self.fields.get(i)
             self.__setattr__(field, value)
         return True
-    def byte_handle(self, request: bytes) -> None:
+    def byte_handle(self, request: bytes) -> bool:
         st = request.decode("UTF-8")
         data:dict = json.loads(st)
         for i in self.fields.keys():

@@ -6,7 +6,6 @@ from tools import *
 from werkzeug.datastructures import ImmutableMultiDict
 from app import app, db
 from app.models import (Collection, Media, User)
-from datetime import datetime
 from .request import Collection_Request, Media_Request
 from .process import ImageHandler
 from .repo import Repo
