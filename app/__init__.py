@@ -10,8 +10,10 @@ from flask_cors import CORS
 
 load_dotenv()
 app = Flask(__name__)
+
 CORS(app)
 app.config.from_object(Config)
+
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 login = LoginManager(app)

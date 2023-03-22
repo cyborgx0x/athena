@@ -1,11 +1,10 @@
 # from app.models import Collection, User
 from app import app
 from auth.auth import auth_bp
-from collection.app import collection
+from fiction.app import fiction
 
 app.register_blueprint(auth_bp)
-app.register_blueprint(collection)
-
+app.register_blueprint(fiction)
 
 # @app.shell_context_processor
 # def make_shell_context():

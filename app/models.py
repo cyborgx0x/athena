@@ -7,36 +7,51 @@ from datetime import datetime
 from tools import *
 from dataclasses import dataclass
 from markupsafe import Markup
-from sqlalchemy import MetaData, Text, Unicode, UnicodeText, JSON, Column, Integer, String, DateTime, ForeignKey
-from flask_sqlalchemy import Model
+from sqlalchemy import (MetaData, Text, Unicode, UnicodeText,
+                        JSON, Column, Integer, String, DateTime, ForeignKey)
+
 from app import db, login
 import json
 meta = MetaData()
 
 
+# class BaseModel(db.Model):
+#     '''
+#     provide basic attribute for model
+#     '''
+#     created_at = Column(DateTime, default=datetime.now())
+#     modified_at = Column(DateTime, default=datetime.now())
+#     created_by = Column(Integer, ForeignKey('user.id'))
+
 @dataclass
 class Collection(db.Model):
 
     '''
-    This table contain many element, and bundle it into a collection, which can be show as a book, project, fiction, screenplay
-    Data of this table can be access directly throught search filter, have it own style that affect the whole. 
+    Collection has all document metadata
+
+    It can apply to many type of document: book, project, fiction, screenplay
+    It provide basic functionality as:
+
+    method: from_json 
+    - param: json_data: A Json Data from client to create new collection
+    
+
     '''
     id: int = Column(Integer, primary_key=True, autoincrement=True)
     name: str = Column(Unicode(300))
     tag: str = Column(Unicode(300))
     status: str = Column(Unicode(300), default="draft")
     short_desc: str = Column(String(160))
-    desc:dict = Column(JSON)
-    cover_data:dict = Column(JSON)
+    desc: dict = Column(JSON)
+    cover_data: dict = Column(JSON)
     cover: str = Column(Text)
-    download:str = Column(Unicode(500))
+    download: str = Column(Unicode(500))
     time = Column(DateTime, default=datetime.now())
-    view:int = Column(Integer)
+    view: int = Column(Integer)
     creator_id = Column(Integer, ForeignKey('user.id'))
     type_id = Column(Integer, ForeignKey('type.id'))
     media = db.relationship('Media', backref='collection')
 
-    
     @staticmethod
     def from_json(json_data):
         return __class__(**json_data)
@@ -50,15 +65,6 @@ class Collection(db.Model):
             return passing_array
         except:
             return "No tag"
-
-    def save(self, passing):
-        '''
-        take an passing data and set the instance data to the passing data, return message to the user
-        '''
-        incoming_data = json.loads(passing.decode('UTF-8'))
-        name = incoming_data["type"]
-        print(self.desc['blocks'])
-        return "success"
 
     def render_text(self):
         render = []

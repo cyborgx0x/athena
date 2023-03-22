@@ -1,9 +1,9 @@
 from flask import (Flask, Markup, flash, jsonify, redirect, render_template,
                    request, send_file, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
-from sqlalchemy import func
+
 from tools import *
-from werkzeug.datastructures import ImmutableMultiDict
+
 from app import app, db
 from app.models import (Collection, Media, User)
 from .request import Collection_Request, Media_Request
@@ -140,7 +140,8 @@ def tag_view(tag):
 @app.route("/edit/collection/<int:id>/", methods=['GET', 'POST'])
 @login_required
 def edit_collection(id):
-    collection = Collection.query.filter_by(id=id).first()
+    collection:Collection = Collection.query.filter_by(id=id).first()
+    
     if current_user.id == collection.creator_id or current_user.type == 1:
         if request.method == 'POST' and request.form:
             request_handle = Collection_Request()
