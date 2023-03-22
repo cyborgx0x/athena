@@ -9,20 +9,34 @@ from dataclasses import dataclass
 from markupsafe import Markup
 from sqlalchemy import (MetaData, Text, Unicode, UnicodeText,
                         JSON, Column, Integer, String, DateTime, ForeignKey)
-
+from sqlalchemy.dialects.postgresql import UUID
 from app import db, login
+import uuid
 import json
 meta = MetaData()
+from sqlalchemy.ext.declarative import declared_attr
 
 
-# class BaseModel(db.Model):
-#     '''
-#     provide basic attribute for model
-#     '''
-#     created_at = Column(DateTime, default=datetime.now())
-#     modified_at = Column(DateTime, default=datetime.now())
-#     created_by = Column(Integer, ForeignKey('user.id'))
+class BaseModel(db.Model):
+    '''
+    provide basic attribute for model
+    '''
+    __abstract__ = True
 
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    created_at = Column(DateTime, default=db.func.now())
+    modified_at = Column(DateTime, default=db.func.now(), onupdate=db.func.now())
+    @declared_attr
+    def created_by(cls):
+        return Column(Integer, ForeignKey('user.id'))
+
+    def update_from_json(self, data:dict):
+        for key, value in data.items():
+            self.__setattr__(key,value)
+
+    @staticmethod
+    def from_json(json_data):
+        return __class__(**json_data)
 @dataclass
 class Collection(db.Model):
 
@@ -65,22 +79,6 @@ class Collection(db.Model):
             return passing_array
         except:
             return "No tag"
-
-    def render_text(self):
-        render = []
-        for item in self.desc["blocks"]:
-            if item["type"] == "paragraph":
-                render.append("<p>" + item["data"]["text"] + "</p>")
-            elif item["type"] == "header":
-                render.append("<h2>" + item["data"]["text"] + "</h2>")
-            elif item["type"] == "list":
-                render.append(str(item["data"]))
-            elif item["type"] == "image":
-                render.append(
-                    "<img class='render-image' src='{0}'>".format(item["data"]["file"]["url"]))
-        output = "\n".join(render)
-        return Markup(output)
-
 
 @dataclass
 class User(UserMixin, db.Model):

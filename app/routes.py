@@ -1,15 +1,13 @@
 from flask import (Flask, Markup, flash, jsonify, redirect, render_template,
                    request, send_file, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
-
-from tools import *
-
+from tools.image import ImageHandler, return_img, getimage
 from app import app, db
 from app.models import (Collection, Media, User)
 from .request import Collection_Request, Media_Request
-from .process import ImageHandler
 from .repo import Repo
 import json
+
 @app.route("/")
 def index():
     top_view_collections = Collection.query.filter_by(status="public").order_by(Collection.view.desc()).limit(20).all()
@@ -32,45 +30,6 @@ def tos():
 def test_search():
     return render_template('_search.html')
 
-'''
-function area
-chứa những chức năng mở rộng
-'''
-
-@app.route("/img-cover/<path:link>")
-def img_proxy(link):
-    img = return_img(link)
-    img.seek(0)
-    return  send_file(img, mimetype='image/jpeg')
-
-@app.route("/upload_link",methods = ['GET', 'POST'])
-def upload_image_by_link():
-    if request.method == "POST":
-        link = json.loads(request.data.decode("UTF-8"))["url"]
-        file  = getimage(link)
-        print(file)
-        res = upload(file)
-        print(type(res), res)
-        r = {
-            "success" : 1,
-            "file": {
-                "url" : res["data"]["image"]["url"],
-            }
-        }
-        return r
-
-@app.route("/upload_image",methods = ['GET', 'POST'])
-def upload_image():
-    if request.method == "POST":
-        res = upload(request.files["image"])
-        print(res)
-        r = {
-            "success" : 1,
-            "file": {
-                "url" : res["data"]["image"]["url"],
-            }
-        }
-        return r
 
 @login_required
 @app.route("/edit/user/<int:id>", methods=['GET', 'POST'])

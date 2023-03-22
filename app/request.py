@@ -6,7 +6,7 @@ take the request from client, validate and return in Data Model
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from flask_sqlalchemy import SQLAlchemy
-from .process import ImageHandler
+from tools.image import ImageHandler
 
 class Request(object):
     fields:dict = {}
