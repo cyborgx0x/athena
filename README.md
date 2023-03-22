@@ -12,3 +12,8 @@
 ``` sh
 pip install -r requirements.txt
 ```
+
+## Structure
+
+Each Module will contain their own logic and should not be depend on each other. 
+The level of autonomy should be in the highest
