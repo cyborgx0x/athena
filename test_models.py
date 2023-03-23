@@ -1,4 +1,6 @@
-from app.models import User
+from auth.models import CoreUser
+import random
+import string
 
 def test_new_user():
     """
@@ -6,7 +8,8 @@ def test_new_user():
     WHEN a new User is created
     THEN check the email, hashed_password, and role fields are defined correctly
     """
-    user = User(email='patkennedy79@gmail.com')
-    user.set_password(password='FlaskIsAwesome')
+    password = ''.join(random.choice(string.ascii_letters) for i in range(20))
+    user = CoreUser(email='patkennedy79@gmail.com')
+    user.set_password(password=password)
     assert user.email == 'patkennedy79@gmail.com'
-    assert user.password_hash != 'FlaskIsAwesome'
+    assert user.password_hash != password
