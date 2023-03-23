@@ -177,12 +177,6 @@ def edit_media(id):
         return redirect(url_for("dashboard"))
 
 
-'''
-API SESSION
-Contain interaction with the request from client
-'''
-
-
 @app.route("/editor/<int:collection_id>/new-chapter/", methods=['GET', 'POST'])
 def new_chapter(collection_id):
     # if current_user.type == 1:

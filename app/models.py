@@ -10,12 +10,11 @@ from markupsafe import Markup
 from sqlalchemy import (MetaData, Text, Unicode, UnicodeText,
                         JSON, Column, Integer, String, DateTime, ForeignKey)
 from sqlalchemy.dialects.postgresql import UUID
-from app import db, login
+from app import db
 import uuid
 import json
 meta = MetaData()
 from sqlalchemy.ext.declarative import declared_attr
-
 
 class BaseModel(db.Model):
     '''
@@ -23,7 +22,7 @@ class BaseModel(db.Model):
     '''
     __abstract__ = True
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     created_at = Column(DateTime, default=db.func.now())
     modified_at = Column(DateTime, default=db.func.now(), onupdate=db.func.now())
     @declared_attr
@@ -34,9 +33,8 @@ class BaseModel(db.Model):
         for key, value in data.items():
             self.__setattr__(key,value)
 
-    @staticmethod
-    def from_json(json_data):
-        return __class__(**json_data)
+
+    
 @dataclass
 class Collection(db.Model):
 
@@ -110,9 +108,9 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    @login.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
+    # @login.user_loader
+    # def load_user(id):
+    #     return User.query.get(int(id))
 
     def load_avatar(self):
         if self.avatar == None:

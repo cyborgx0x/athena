@@ -1,6 +1,7 @@
 from flask.views import View, MethodView
 from flask import jsonify, request
 from app import db
+from fiction.models import Fiction
 
 class FictionItemView(MethodView):
     init_every_request = False
@@ -35,7 +36,7 @@ class FictionItemView(MethodView):
 class FictionListAPIView(MethodView):
     init_every_request = False
 
-    def __init__(self, model):
+    def __init__(self, model:Fiction):
         self.model = model
         # self.validator = generate_validator(model, create=True)
 
@@ -51,5 +52,6 @@ class FictionListAPIView(MethodView):
         item = self.model.from_json(request.json)
         db.session.add(item)
         db.session.commit()
-        return jsonify(item.to_json())
+        
+        return jsonify(item.unpack())
 
