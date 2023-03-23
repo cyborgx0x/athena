@@ -7,8 +7,9 @@ asset = Blueprint("asset", __name__, template_folder="templates", static_folder=
 
 
 
-@asset.route("/image_proxy/<path:link>")
-def img_proxy(link):
+@asset.get("/image_proxy/")
+def img_proxy():
+    link = request.args.get("image_url")
     img = return_img(link)
     img.seek(0)
     return  send_file(img, mimetype='image/jpeg')
