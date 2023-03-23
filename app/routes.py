@@ -7,6 +7,8 @@ from app.models import (Collection, Media, User)
 from .request import Collection_Request, Media_Request
 from .repo import Repo
 import json
+import requests
+
 
 @app.route("/")
 def index():
@@ -39,9 +41,10 @@ def edit_user(id):
         if request.method == 'POST' and request.form:
             user.name = request.form.get("user_full_name")
             try:
-                res =  upload(request.files["user_avatar"])
-                user.avatar = res["data"]["image"]["url"]
-            except requests.exceptions.JSONDecodeError as e:
+                file = request.files["user_avatar"]
+                link = ImageHandler.upload_to_imgbb(file)
+                user.avatar = link
+            except ConnectionError as e:
                 print(e.strerror)
             db.session.commit()
             return redirect(url_for("edit_user", id=id))
