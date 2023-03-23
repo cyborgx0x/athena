@@ -1,69 +1,55 @@
 '''
-take the request from client, validate and return in Data Model
-
+Collection of tool to work with request HTTP
 '''
 
 from werkzeug.datastructures import ImmutableMultiDict
 import json
-from flask_sqlalchemy import SQLAlchemy
-from .process import ImageHandler
 
-class Request(object):
-    fields:dict = {}
-    image: ImageHandler
-    def populate(self, request: ImmutableMultiDict) -> bool:
-        for i in self.fields.keys():
-            value = request.get(key=i)
-            field = self.fields.get(i)
-            self.__setattr__(field, value)
-        return True
-    def byte_handle(self, request: bytes) -> None:
-        st = request.decode("UTF-8")
-        data:dict = json.loads(st)
-        for i in self.fields.keys():
-            value = data.get(i)
-            field = self.fields.get(i)
-            self.__setattr__(field, value)
-        return True
-    def image_upload(self):
-        self.image.upload()
-        if self.image.upload_status:
-            self.__setattr__("cover", self.image.url)
-        print(self.cover)
-        
-    def validate(self):
+
+class Request():
+    '''
+    Turn the request to one unified data type
+    '''
+    def populate(self):
         '''
-        validate the field include in the fields
+        This will populate field in register_fields to the objects
+        For now I dont have any idea to working with it, even it can provide type check for each field
         '''
         pass
-    def sanitize(self):
-        pass
-    def to_dict(self) -> dict:
-        hm = {}
-        for i,v in self.fields.items():
-            value = self.__getattribute__(v)
-            if value != "None" and value != None:
-                hm[v] = value
-        return hm
+
+    def to_json(self, load_of_data: ImmutableMultiDict) -> dict:
+        return {
+            counter_field: load_of_data.get(field) for (field, counter_field) in self.Meta.register_fields.items()
+        }
+    
+    def byte_handle(self, request: bytes) -> dict:
+        st = request.decode("UTF-8") 
+        return self.to_json(load_of_data=json.loads(st))
+
+    class Meta:
+        fields = list
+        register_fields = dict
 
 
 class Collection_Request(Request):
-    fields = {
-        "collection_name": "name",
-        "tag-manage": "tag",
-        "book-cover":"cover",
-        "short-desc": "short_desc",
-        "download": "download",
-        "collection-theme": "",
-        "status": "status",
-        "content": "desc",
-    }
+    class Meta:
+        register_fields = {
+            "collection_name": "name",
+            "tag-manage": "tag",
+            "book-cover": "cover",
+            "short-desc": "short_desc",
+            "download": "download",
+            "collection-theme": "",
+            "status": "status",
+            "content": "desc",
+        }
 
 
 class Media_Request(Request):
-    fields = {
-        "chapter_name": "name",
-        "chapter_order": "chapter_order",
-        "upload": "content",
-    }
+    class Meta:
+        register_fields = {
+            "chapter_name": "name",
+            "chapter_order": "chapter_order",
+            "upload": "content",
+        }
 
