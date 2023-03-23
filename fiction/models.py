@@ -6,8 +6,8 @@ from sqlalchemy import (Text, Column, Integer, Unicode,
                         )
 from sqlalchemy.orm import relationship
 from chapter.models import Chapter
-
-class Fiction(BaseModel):
+from app.repo import UnPack
+class Fiction(BaseModel, UnPack):
     name: str = Column(Unicode(300))
     tag = Column(JSON)
     status: str = Column(Unicode(125), default=Config.ArticleConstant.DRAFT)
@@ -20,13 +20,8 @@ class Fiction(BaseModel):
     chapter = relationship(Chapter, backref='fiction')
     
     @staticmethod
-    def from_json(json_data):
+    def from_json(json_data: dict):
         return __class__(**json_data)
-    
-    def unpack(self):
-        return {
-            field:self.__getattribute__(field) for field in self.Meta.fields
-        }
     class Meta:
         fields = [
             "id",

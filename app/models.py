@@ -1,3 +1,4 @@
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Column, Integer, String, Unicode, JSON, DateTime
 import requests
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -14,9 +15,9 @@ from app import db
 import uuid
 import json
 meta = MetaData()
-from sqlalchemy.ext.declarative import declared_attr
 
-class BaseModel(db.Model):
+
+class BaseModel(db.Model,   ):
     '''
     provide basic attribute for model
     '''
@@ -24,17 +25,14 @@ class BaseModel(db.Model):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     created_at = Column(DateTime, default=db.func.now())
-    modified_at = Column(DateTime, default=db.func.now(), onupdate=db.func.now())
+    modified_at = Column(DateTime, default=db.func.now(),
+                         onupdate=db.func.now())
+
     @declared_attr
     def created_by(cls):
         return Column(Integer, ForeignKey('user.id'))
 
-    def update_from_json(self, data:dict):
-        for key, value in data.items():
-            self.__setattr__(key,value)
 
-
-    
 @dataclass
 class Collection(db.Model):
 
@@ -46,7 +44,7 @@ class Collection(db.Model):
 
     method: from_json 
     - param: json_data: A Json Data from client to create new collection
-    
+
 
     '''
     id: int = Column(Integer, primary_key=True, autoincrement=True)
@@ -77,6 +75,7 @@ class Collection(db.Model):
             return passing_array
         except:
             return "No tag"
+
 
 @dataclass
 class User(UserMixin, db.Model):

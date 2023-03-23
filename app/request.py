@@ -1,22 +1,25 @@
 '''
-take the request from client, validate and return in Data Model
-
+Collection of tool to work with request HTTP
 '''
 
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from flask_sqlalchemy import SQLAlchemy
-from tools.image import ImageHandler
 
-class Request(object):
+class Request():
+    '''
+    Turn the request to one unified data type
+    '''
     fields:dict = {}
-    image: ImageHandler
-    def populate(self, request: ImmutableMultiDict) -> bool:
+    
+    def populate(self, request: ImmutableMultiDict) -> dict:
         for i in self.fields.keys():
             value = request.get(key=i)
             field = self.fields.get(i)
             self.__setattr__(field, value)
-        return True
+        return self
+    
+    @staticmethod
     def byte_handle(self, request: bytes) -> bool:
         st = request.decode("UTF-8")
         data:dict = json.loads(st)
@@ -25,19 +28,7 @@ class Request(object):
             field = self.fields.get(i)
             self.__setattr__(field, value)
         return True
-    def image_upload(self):
-        self.image.upload()
-        if self.image.upload_status:
-            self.__setattr__("cover", self.image.url)
-        print(self.cover)
         
-    def validate(self):
-        '''
-        validate the field include in the fields
-        '''
-        pass
-    def sanitize(self):
-        pass
     def to_dict(self) -> dict:
         hm = {}
         for i,v in self.fields.items():
@@ -45,7 +36,8 @@ class Request(object):
             if value != "None" and value != None:
                 hm[v] = value
         return hm
-
+    class Meta:
+        fields = list
 
 class Collection_Request(Request):
     fields = {
@@ -66,4 +58,3 @@ class Media_Request(Request):
         "chapter_order": "chapter_order",
         "upload": "content",
     }
-
