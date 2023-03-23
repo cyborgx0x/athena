@@ -7,12 +7,12 @@ asset = Blueprint("asset", __name__, template_folder="templates", static_folder=
 
 
 
-@asset.get("/image_proxy/")
-def img_proxy():
-    link = request.args.get("image_url")
-    img = return_img(link)
-    img.seek(0)
-    return  send_file(img, mimetype='image/jpeg')
+# @asset.get("/image_proxy/")
+# def img_proxy():
+#     link = request.args.get("image_url")
+#     img = return_img(link)
+#     img.seek(0)
+#     return  send_file(img, mimetype='image/jpeg')
 
 @asset.route("/upload_link",methods = ['POST'])
 def upload_image_by_link():
