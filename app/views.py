@@ -1,9 +1,10 @@
 from flask.views import View, MethodView
 from flask import jsonify, request
 from app import db
-
+from flask_praetorian import auth_required
 
 class ItemAPIView(MethodView):
+    decorators = [auth_required]
     init_every_request = False
 
     def __init__(self, model):
@@ -37,7 +38,7 @@ class ItemAPIView(MethodView):
 
 class ListCreateAPIView(MethodView):
     init_every_request = False
-
+    decorators = [auth_required]
     def __init__(self, model):
         self.model = model
         # self.validator = generate_validator(model, create=True)

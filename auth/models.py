@@ -1,6 +1,7 @@
 from sqlalchemy import (
     Column, Integer, String, Unicode, DateTime, JSON
 )
+
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -14,13 +15,76 @@ from app import login
 class CoreUser(UserMixin, BaseUser, UnPack):
     facebook = Column(String(50))
     name = Column(Unicode(256))
-    user_name: str = Column(String(64))
+    username: str = Column(String(64))
     email = Column(String(120))
     avatar = Column(String(200))
     about_me = Column(JSON)
     last_seen = Column(DateTime, default=db.func.now())
-    password_hash = Column(String(128))
+    password_hash = db.Column(db.Text)
     type = Column(Integer, default=2)
+    is_active = db.Column(db.Boolean, default=True, server_default="true")
+    roles = db.Column(db.Text)
+
+    @property
+    def identity(self):
+        """
+        *Required Attribute or Property*
+
+        flask-praetorian requires that the user class has an ``identity`` instance
+        attribute or property that provides the unique id of the user instance
+        """
+        return str(self.id)
+
+    @property
+    def rolenames(self):
+        """
+        *Required Attribute or Property*
+
+        flask-praetorian requires that the user class has a ``rolenames`` instance
+        attribute or property that provides a list of strings that describe the roles
+        attached to the user instance
+        """
+        try:
+            return self.roles.split(",")
+        except Exception:
+            return []
+    
+    @property
+    def password(self):
+        """
+        *Required Attribute or Property*
+
+        flask-praetorian requires that the user class has a ``password`` instance
+        attribute or property that provides the hashed password assigned to the user
+        instance
+        """
+        return self.password_hash
+    
+    @classmethod
+    def lookup(cls, username):
+        """
+        *Required Method*
+
+        flask-praetorian requires that the user class implements a ``lookup()``
+        class method that takes a single ``username`` argument and returns a user
+        instance if there is one that matches or ``None`` if there is not.
+        """
+        return cls.query.filter_by(username=username).one_or_none()
+
+    @classmethod
+    def identify(cls, id):
+        """
+        *Required Method*
+
+        flask-praetorian requires that the user class implements an ``identify()``
+        class method that takes a single ``id`` argument and returns user instance if
+        there is one that matches or ``None`` if there is not.
+        """
+        return cls.query.get(id)
+
+    def is_valid(self):
+        return self.is_active
+    
 
     @login.user_loader
     def load_user(id):
@@ -47,7 +111,7 @@ class CoreUser(UserMixin, BaseUser, UnPack):
         fields = [
             "id",
             "name",
-            "user_name",
+            "username",
             "email",
             "avatar",
             "created_at",
