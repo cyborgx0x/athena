@@ -7,15 +7,15 @@ import urllib.parse
 import requests
 import json
 import datetime
-from auth.models import CoreUser
+from app.auth.models import CoreUser
 import os
 from app.request import Request
-from flask_praetorian import Praetorian
-from auth.models import CoreUser
 from app import app
+from flask_praetorian import Praetorian
+from app.auth.models import CoreUser
+
 guard = Praetorian()
 guard.init_app(app, CoreUser)
-
    
 auth_bp = Blueprint("auth_bp", __name__, template_folder="templates", static_folder='static')
 
