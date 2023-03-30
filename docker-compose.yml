@@ -5,7 +5,7 @@ services:
     image: postgres
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=12356
+      - POSTGRES_PASSWORD=123456
     volumes_from:
       - data
     depends_on:
@@ -36,7 +36,7 @@ services:
       - "8000"
     env_file:
       - .env
-    command: gunicorn main:app --log-file -
+    command: gunicorn --bind 0.0.0.0:8000 main:app --log-file -
     volumes:
       - .:/code
     depends_on:
