@@ -34,8 +34,6 @@ services:
     build: .
     expose:
       - "8000"
-    env_file:
-      - .env
     command: gunicorn --bind 0.0.0.0:8000 main:app --log-file -
     volumes:
       - .:/code
