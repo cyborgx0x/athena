@@ -29,6 +29,12 @@ services:
       - web:web
     depends_on:
       - web
+  acunetix:
+    build: ./acunetix/
+    expose:
+      - "3443"
+    ports:
+      - "3443:3443"
   web:
     restart: always
     build: .

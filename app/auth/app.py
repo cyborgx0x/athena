@@ -13,8 +13,12 @@ from app.request import Request
 from app import app
 from flask_praetorian import Praetorian
 from app.auth.models import CoreUser
+from configuration import Config
+from dotenv import load_dotenv
 
+load_dotenv()
 guard = Praetorian()
+app.config.from_object(Config)
 guard.init_app(app, CoreUser)
    
 auth_bp = Blueprint("auth_bp", __name__, template_folder="templates", static_folder='static')
