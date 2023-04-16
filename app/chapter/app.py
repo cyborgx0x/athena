@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from chapter.models import Chapter
+from app.chapter.models import Chapter
 from flask_login import login_required
 from app.views import register_api
 

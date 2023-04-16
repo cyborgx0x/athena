@@ -7,10 +7,20 @@ import urllib.parse
 import requests
 import json
 import datetime
-from auth.models import CoreUser
+from app.auth.models import CoreUser
 import os
 from app.request import Request
+from app import app
+from flask_praetorian import Praetorian
+from app.auth.models import CoreUser
+from configuration import Config
+from dotenv import load_dotenv
 
+load_dotenv()
+guard = Praetorian()
+app.config.from_object(Config)
+guard.init_app(app, CoreUser)
+   
 auth_bp = Blueprint("auth_bp", __name__, template_folder="templates", static_folder='static')
 
 from app.views import register_api
@@ -29,7 +39,7 @@ def logout():
 class RegisterRequest(Request):
     class Meta:
         register_fields=dict(
-            username="user_name",
+            username="username",
             name="name",
             email="email",
             avatar="avatar",
@@ -45,14 +55,14 @@ def register():
         ), status=400)
     handler = RegisterRequest()
     data = handler.to_json(load_of_data=request.json)
-    users = CoreUser.query.filter_by(user_name=data["user_name"]).first()
+    users = CoreUser.query.filter_by(username=data["username"]).first()
     if users:
         return jsonify(dict(
             detail="Username already taken"
         )) 
     password = data.pop("password")
     user = CoreUser(**data)
-    user.set_password(password=password)
+    user.password_hash = guard.hash_password(password)
     del password
     db.session.add(user)
     db.session.commit()
@@ -66,22 +76,17 @@ class LoginRequest(Request):
             password="password"
         )
 
+     
+
 @auth_bp.post('/login')
 def login():
-    if current_user.is_authenticated:
-        return jsonify(dict(
-            detail="Already Login"
-        ))
-    handler = LoginRequest()
-    data = handler.to_json(load_of_data=request.json)
-    user = CoreUser.query.filter_by(user_name=data["user_name"]).first()
-    if user is None or not user.check_password(data["password"]):
-        return jsonify(dict(
-            detail="Invalid Login"
-        ))
-    
-    login_user(user, remember=True)
-    return jsonify(user.to_json())
+    req = request.get_json(force=True)
+    username = req.get("username", None)
+    password = req.get("password", None)
+    user = guard.authenticate(username, password)
+    ret = {"access_token": guard.encode_jwt_token(user)}
+    return (jsonify(ret), 200)
+
 
 @auth_bp.get("/login_with_facebook")
 def login_with_facebook():

@@ -37,3 +37,4 @@ mysqlclient
 Flask-Markdown
 psycopg2-binary
 python-dotenv
+flask_praetorian

@@ -5,7 +5,7 @@ from sqlalchemy import (Text, Column, Integer, Unicode,
                         JSON, String
                         )
 from sqlalchemy.orm import relationship
-from chapter.models import Chapter
+from app.chapter.models import Chapter
 from app.repo import UnPack
 class Fiction(BaseModel, UnPack):
     name: str = Column(Unicode(300))

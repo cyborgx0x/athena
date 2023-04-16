@@ -1,0 +1,47 @@
+version: '2'
+services:
+  db:
+    restart: always
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    volumes_from:
+      - data
+    depends_on:
+      - data
+  data:
+    restart: always
+    image: postgres
+    volumes:
+      - /var/lib/postgresql
+    command: "true"
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      - /www/static/
+    volumes_from:
+      - web
+    links:
+      - web:web
+    depends_on:
+      - web
+  acunetix:
+    build: ./acunetix/
+    expose:
+      - "3443"
+    ports:
+      - "3443:3443"
+  web:
+    restart: always
+    build: .
+    expose:
+      - "8000"
+    command: gunicorn --bind 0.0.0.0:8000 main:app --log-file -
+    volumes:
+      - .:/code
+    depends_on:
+      - db
